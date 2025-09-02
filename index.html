@@ -174,16 +174,16 @@
                 <tr><th scope="row">ROL</th><td>' + (feature.properties['ROL'] !== null ? autolinker.link(String(feature.properties['ROL']).replace(/'/g, '\'').toLocaleString()) : '') + '</td></tr>\
                 <tr><th scope="row">ZONA PRI</th><td>' + (feature.properties['ZONA PRI'] !== null ? autolinker.link(String(feature.properties['ZONA PRI']).replace(/'/g, '\'').toLocaleString()) : '') + '</td></tr>\
                 <tr><th scope="row">ZONA</th><td>' + (feature.properties['ZONA'] !== null ? autolinker.link(String(feature.properties['ZONA']).replace(/'/g, '\'').toLocaleString()) : '') + '</td></tr>\
-                <tr><th scope="row">ESTADO LAG</th><td>' + (feature.properties['ESTADO LAG'] !== null ? autolinker.link(String(feature.properties['ESTADO LAG']).replace(/'/g, '\'').toLocaleString()) : '') + '</td></tr>\
-                <tr><th scope="row">CONSTRUCCI</th><td>' + (feature.properties['CONSTRUCCI'] !== null ? autolinker.link(String(feature.properties['CONSTRUCCI']).replace(/'/g, '\'').toLocaleString()) : '') + '</td></tr>\
-                <tr><th scope="row">APROBACION</th><td>' + (feature.properties['APROBACION'] !== null ? autolinker.link(String(feature.properties['APROBACION']).replace(/'/g, '\'').toLocaleString()) : '') + '</td></tr>\
+                <tr><th scope="row">ESTADO LAGO</th><td>' + (feature.properties['ESTADO LAG'] !== null ? autolinker.link(String(feature.properties['ESTADO LAG']).replace(/'/g, '\'').toLocaleString()) : '') + '</td></tr>\
+                <tr><th scope="row">CONSTRUCCIONES</th><td>' + (feature.properties['CONSTRUCCI'] !== null ? autolinker.link(String(feature.properties['CONSTRUCCI']).replace(/'/g, '\'').toLocaleString()) : '') + '</td></tr>\
+                <tr><th scope="row">APROBACIÓN</th><td>' + (feature.properties['APROBACION'] !== null ? autolinker.link(String(feature.properties['APROBACION']).replace(/'/g, '\'').toLocaleString()) : '') + '</td></tr>\
                 <tr><th scope="row">FECHA</th><td>' + (feature.properties['FECHA'] !== null ? autolinker.link(String(feature.properties['FECHA']).replace(/'/g, '\'').toLocaleString()) : '') + '</td></tr>\
                 <tr><th scope="row">UBICACIÓN</th><td>' + (feature.properties['UBICACIÓN'] !== null ? autolinker.link(String(feature.properties['UBICACIÓN']).replace(/'/g, '\'').toLocaleString()) : '') + '</td></tr>\
-                <tr><th scope="row">PROPIETARI</th><td>' + (feature.properties['PROPIETARI'] !== null ? autolinker.link(String(feature.properties['PROPIETARI']).replace(/'/g, '\'').toLocaleString()) : '') + '</td></tr>\
+                <tr><th scope="row">PROPIETARIO</th><td>' + (feature.properties['PROPIETARI'] !== null ? autolinker.link(String(feature.properties['PROPIETARI']).replace(/'/g, '\'').toLocaleString()) : '') + '</td></tr>\
                 <tr><th scope="row">SUPERFICIE</th><td>' + (feature.properties['SUPERFICIE'] !== null ? autolinker.link(String(feature.properties['SUPERFICIE']).replace(/'/g, '\'').toLocaleString()) : '') + '</td></tr>\
                 <tr><th scope="row">DESTINO </th><td>' + (feature.properties['DESTINO '] !== null ? autolinker.link(String(feature.properties['DESTINO ']).replace(/'/g, '\'').toLocaleString()) : '') + '</td></tr>\
                 <tr><th scope="row">RECEPCIÓN</th><td>' + (feature.properties['RECEPCIÓN'] !== null ? autolinker.link(String(feature.properties['RECEPCIÓN']).replace(/'/g, '\'').toLocaleString()) : '') + '</td></tr>\
-                <tr><th scope="row">PELIGRO VO</th><td>' + (feature.properties['PELIGRO VO'] !== null ? autolinker.link(String(feature.properties['PELIGRO VO']).replace(/'/g, '\'').toLocaleString()) : '') + '</td></tr>\
+                <tr><th scope="row">PELIGRO VOLCÁNICO</th><td>' + (feature.properties['PELIGRO VO'] !== null ? autolinker.link(String(feature.properties['PELIGRO VO']).replace(/'/g, '\'').toLocaleString()) : '') + '</td></tr>\
                 </table>';
             var content = removeEmptyRowsFromPopupContent(popupContent, feature);
             layer.on('popupopen', function(e) {

@@ -32,9 +32,9 @@
         #search-container {
             position: absolute;
             top: 10px;
-            right: 10px; /* Posicionamiento a la derecha */
+            right: 10px;
             z-index: 1000;
-            margin-top: 100px; /* Ajuste para colocarlo más abajo */
+            margin-top: 100px;
         }
         .search-box {
             background: rgba(255, 255, 255, 0.9);
@@ -225,12 +225,20 @@
         
         map.fitBounds(layer_SUBDIVISIONESAO20232024_2.getBounds());
 
-        var overlaysTree = [
-            {label: '<img src="legend/SUBDIVISIONESAO20232024_2.png" /> SUBDIVISIONES AÑO 2023-2024', layer: layer_SUBDIVISIONESAO20232024_2},
-            {label: "Google Satellite", layer: layer_GoogleSatellite_1},
-            {label: "OpenStreetMap", layer: layer_OpenStreetMap_0},
-        ];
-        var lay = L.control.layers.tree(null, overlaysTree,{
+        var overlaysTree = {
+            label: 'Capas', children: [
+                {label: '<img src="legend/SUBDIVISIONESAO20232024_2.png" /> SUBDIVISIONES AÑO 2023-2024', layer: layer_SUBDIVISIONESAO20232024_2},
+            ]
+        };
+
+        var baseTree = {
+            label: 'Mapas Base', children: [
+                {label: "Google Satellite", layer: layer_GoogleSatellite_1},
+                {label: "OpenStreetMap", layer: layer_OpenStreetMap_0},
+            ]
+        };
+
+        var lay = L.control.layers.tree(baseTree, overlaysTree,{
             collapsed: true,
         });
         lay.addTo(map);

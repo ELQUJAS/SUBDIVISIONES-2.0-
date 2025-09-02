@@ -21,7 +21,7 @@
         #coordinates {
             position: absolute;
             bottom: 10px;
-            right: 10px;
+            left: 10px; /* Cambiado a left */
             z-index: 1000;
             background: rgba(255, 255, 255, 0.8);
             padding: 5px 10px;
@@ -172,7 +172,6 @@
         bounds_group.addLayer(layer_SUBDIVISIONESAO20232024_2);
         map.addLayer(layer_SUBDIVISIONESAO20232024_2);
         
-        // Ajustar el zoom para que se adapte a los límites de la capa
         map.fitBounds(layer_SUBDIVISIONESAO20232024_2.getBounds());
 
         var overlaysTree = [

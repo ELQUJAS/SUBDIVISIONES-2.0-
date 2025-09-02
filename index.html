@@ -29,19 +29,21 @@
             font-family: Arial, sans-serif;
             font-size: 14px;
         }
-        #search-container {
+        #controls-container {
             position: absolute;
             top: 10px;
-            left: 10px; /* Posición para ubicarlo bajo la leyenda */
+            left: 10px;
             z-index: 1000;
-            margin-top: 35px; /* Espacio para que no se solape con el zoom */
+        }
+        #search-container {
             background: rgba(255, 255, 255, 0.9);
             padding: 10px;
             border-radius: 5px;
             font-family: Arial, sans-serif;
+            margin-top: 5px; /* Espacio entre la leyenda y el buscador */
         }
         #search-container input {
-            width: 200px; /* Ancho para el formato de coordenadas */
+            width: 200px;
             padding: 5px;
             margin-right: 5px;
             border: 1px solid #ccc;
@@ -69,10 +71,12 @@
 <body>
     <div id="map"></div>
     <div id="coordinates">Mueva el mouse sobre el mapa para ver las coordenadas.</div>
-    <div id="search-container">
-        <input type="text" id="coord-input" placeholder="Ej: -39.164024 -72.252006">
-        <button onclick="searchCoordinates()">Buscar</button>
-        <div id="search-message"></div>
+    <div id="controls-container">
+        <div id="search-container">
+            <input type="text" id="coord-input" placeholder="Ej: -39.164024 -72.252006">
+            <button onclick="searchCoordinates()">Buscar</button>
+            <div id="search-message"></div>
+        </div>
     </div>
 
     <script src="js/qgis2web_expressions.js"></script>
@@ -221,7 +225,8 @@
         var lay = L.control.layers.tree(null, overlaysTree,{
             collapsed: true,
         });
-        lay.addTo(map);
+        // Agregar el control de capas al contenedor
+        document.getElementById('controls-container').appendChild(lay.onAdd(map));
         
         var coordinatesDiv = document.getElementById('coordinates');
 

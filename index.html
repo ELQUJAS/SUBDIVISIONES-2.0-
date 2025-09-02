@@ -32,8 +32,9 @@
         #search-container {
             position: absolute;
             top: 10px;
-            left: 10px;
+            right: 10px; /* Posicionamiento a la derecha */
             z-index: 1000;
+            margin-top: 100px; /* Ajuste para colocarlo más abajo */
         }
         .search-box {
             background: rgba(255, 255, 255, 0.9);
@@ -64,15 +65,6 @@
             margin-top: 5px;
             font-size: 12px;
             color: #d9534f;
-        }
-        /* Ajuste para colocar los buscadores debajo de la leyenda */
-        .leaflet-control-container .leaflet-top.leaflet-left {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-        }
-        .leaflet-control-layers {
-            margin-bottom: 25px; /* Ajuste para el espaciado */
         }
     </style>
     <title>Visor de Coordenadas y Roles</title>
@@ -251,15 +243,6 @@
             coordinatesDiv.innerHTML = `Latitud: ${lat}<br>Longitud: ${lng}`;
         });
         
-        // Mover los buscadores debajo del control de capas
-        var searchContainer = document.getElementById('search-container');
-        var controlContainer = document.querySelector('.leaflet-control-container .leaflet-top.leaflet-left');
-        controlContainer.appendChild(searchContainer);
-        
-        // Ajustar el margen del contenedor de búsqueda
-        searchContainer.style.marginTop = '25px';
-
-
         var rolSearchMessageDiv = document.getElementById('rol-search-message');
         var coordSearchMessageDiv = document.getElementById('coord-search-message');
         var searchMarker;

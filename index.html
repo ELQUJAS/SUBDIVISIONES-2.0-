@@ -34,7 +34,7 @@
 </head>
 <body>
     <div id="map"></div>
-    <div id="coordinates">Esperando ubicación...</div>
+    <div id="coordinates">Mueva el mouse sobre el mapa para ver las coordenadas.</div>
 
     <script src="js/qgis2web_expressions.js"></script>
     <script src="js/leaflet.js"></script>
@@ -181,46 +181,16 @@
             collapsed: true,
         });
         lay.addTo(map);
-
-        // Nuevo código para el visor de coordenadas en tiempo real
-        var myLocationMarker;
+        
+        // Nuevo código para el visualizador de coordenadas con el mouse
         var coordinatesDiv = document.getElementById('coordinates');
 
-        // Función para actualizar el marcador y las coordenadas
-        function onLocationFound(e) {
-            var latlng = e.latlng;
-            var lat = latlng.lat.toFixed(6);
-            var lng = latlng.lng.toFixed(6);
-
-            // Actualizar el texto en la parte inferior derecha
+        map.on('mousemove', function(e) {
+            var lat = e.latlng.lat.toFixed(6);
+            var lng = e.latlng.lng.toFixed(6);
             coordinatesDiv.innerHTML = `Latitud: ${lat}<br>Longitud: ${lng}`;
+        });
 
-            // Si el marcador no existe, créalo
-            if (!myLocationMarker) {
-                myLocationMarker = L.circleMarker(latlng, {
-                    radius: 8,
-                    fillColor: "#ff7800",
-                    color: "#000",
-                    weight: 1,
-                    opacity: 1,
-                    fillOpacity: 0.8
-                }).addTo(map);
-            } else {
-                // Si ya existe, simplemente actualiza su posición
-                myLocationMarker.setLatLng(latlng);
-            }
-        }
-
-        // Función para manejar errores de geolocalización
-        function onLocationError(e) {
-            coordinatesDiv.innerHTML = "Error de ubicación: " + e.message;
-        }
-
-        // Iniciar la geolocalización
-        map.on('locationfound', onLocationFound);
-        map.on('locationerror', onLocationError);
-        map.locate({setView: true, maxZoom: 16, watch: true, enableHighAccuracy: true});
-        
         setBounds();
     </script>
 </body>

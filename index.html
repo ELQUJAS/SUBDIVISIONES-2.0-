@@ -32,15 +32,16 @@
         #search-container {
             position: absolute;
             top: 10px;
-            right: 10px;
+            left: 10px; /* Posición para ubicarlo bajo la leyenda */
             z-index: 1000;
+            margin-top: 35px; /* Espacio para que no se solape con el zoom */
             background: rgba(255, 255, 255, 0.9);
             padding: 10px;
             border-radius: 5px;
             font-family: Arial, sans-serif;
         }
         #search-container input {
-            width: 100px;
+            width: 200px; /* Ancho para el formato de coordenadas */
             padding: 5px;
             margin-right: 5px;
             border: 1px solid #ccc;
@@ -69,8 +70,7 @@
     <div id="map"></div>
     <div id="coordinates">Mueva el mouse sobre el mapa para ver las coordenadas.</div>
     <div id="search-container">
-        <input type="text" id="lat-input" placeholder="Latitud">
-        <input type="text" id="lon-input" placeholder="Longitud">
+        <input type="text" id="coord-input" placeholder="Ej: -39.164024 -72.252006">
         <button onclick="searchCoordinates()">Buscar</button>
         <div id="search-message"></div>
     </div>
@@ -235,8 +235,8 @@
         var searchMessageDiv = document.getElementById('search-message');
 
         function searchCoordinates() {
-            var latInput = parseFloat(document.getElementById('lat-input').value);
-            var lonInput = parseFloat(document.getElementById('lon-input').value);
+            var inputString = document.getElementById('coord-input').value.trim();
+            var coords = inputString.split(/\s+/).map(Number);
 
             // Eliminar el marcador anterior si existe
             if (searchMarker) {
@@ -244,14 +244,17 @@
             }
 
             // Validar las coordenadas
-            if (isNaN(latInput) || isNaN(lonInput) || latInput < -90 || latInput > 90 || lonInput < -180 || lonInput > 180) {
-                searchMessageDiv.innerHTML = "Coordenadas no válidas. Por favor, ingrese valores numéricos entre -90/90 (Lat) y -180/180 (Lon).";
+            if (coords.length !== 2 || isNaN(coords[0]) || isNaN(coords[1]) || coords[0] < -90 || coords[0] > 90 || coords[1] < -180 || coords[1] > 180) {
+                searchMessageDiv.innerHTML = "Formato no válido. Ingrese Latitud y Longitud separadas por un espacio.";
                 searchMessageDiv.style.color = 'red';
                 return;
             }
 
             // Limpiar mensaje de error
             searchMessageDiv.innerHTML = "";
+            
+            var latInput = coords[0];
+            var lonInput = coords[1];
 
             // Centrar el mapa y hacer zoom
             var newCenter = L.latLng(latInput, lonInput);

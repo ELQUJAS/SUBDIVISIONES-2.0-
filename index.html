@@ -35,14 +35,21 @@
             left: 10px;
             z-index: 1000;
         }
-        #search-container input {
+        .search-box {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 10px;
+            border-radius: 5px;
+            font-family: Arial, sans-serif;
+            margin-top: 5px;
+        }
+        .search-box input {
             width: 200px;
             padding: 5px;
             margin-right: 5px;
             border: 1px solid #ccc;
             border-radius: 3px;
         }
-        #search-container button {
+        .search-box button {
             padding: 5px 10px;
             border: none;
             background-color: #0078A8;
@@ -50,31 +57,32 @@
             border-radius: 3px;
             cursor: pointer;
         }
-        #search-container button:hover {
+        .search-box button:hover {
             background-color: #005f85;
         }
-        #search-message {
+        .search-message {
             margin-top: 5px;
             font-size: 12px;
             color: #d9534f;
         }
-        /* Estilo para el control de capas de Leaflet, lo moverá a la parte superior derecha */
-        .leaflet-control-layers.leaflet-control {
-            top: 10px !important;
-            left: 10px !important;
-            position: absolute;
-        }
     </style>
-    <title>Visor de Roles</title>
+    <title>Visor de Coordenadas y Roles</title>
 </head>
 <body>
     <div id="map"></div>
     <div id="coordinates">Mueva el mouse sobre el mapa para ver las coordenadas.</div>
     
     <div id="search-container">
-        <input type="text" id="rol-input" placeholder="Buscar por ROL">
-        <button onclick="searchRol()">Buscar</button>
-        <div id="search-message"></div>
+        <div class="search-box">
+            <input type="text" id="rol-input" placeholder="Buscar por ROL">
+            <button onclick="searchRol()">Buscar</button>
+            <div id="rol-search-message" class="search-message"></div>
+        </div>
+        <div class="search-box">
+            <input type="text" id="coord-input" placeholder="Ej: -39.16 -72.25">
+            <button onclick="searchCoordinates()">Buscar</button>
+            <div id="coord-search-message" class="search-message"></div>
+        </div>
     </div>
 
     <script src="js/qgis2web_expressions.js"></script>
@@ -225,9 +233,8 @@
         });
         lay.addTo(map);
 
-        // Se elimina el contenedor de búsqueda del HTML, ya que el control de capas se añade directamente al mapa
-        // Se añade un margen superior para que no se solape con el control de zoom
-        document.getElementById('search-container').style.marginTop = '150px';
+        // Ajusta la posición del contenedor de búsqueda con CSS
+        document.getElementById('search-container').style.top = '150px';
 
         var coordinatesDiv = document.getElementById('coordinates');
 
@@ -237,11 +244,20 @@
             coordinatesDiv.innerHTML = `Latitud: ${lat}<br>Longitud: ${lng}`;
         });
 
-        var searchMessageDiv = document.getElementById('search-message');
+        var rolSearchMessageDiv = document.getElementById('rol-search-message');
+        var coordSearchMessageDiv = document.getElementById('coord-search-message');
+        var searchMarker;
 
         function searchRol() {
             var rolInput = document.getElementById('rol-input').value.trim();
             var found = false;
+            
+            if (searchMarker) {
+                map.removeLayer(searchMarker);
+            }
+            
+            rolSearchMessageDiv.innerHTML = "";
+            coordSearchMessageDiv.innerHTML = "";
             
             // Recorrer las características (polígonos) de la capa
             layer_SUBDIVISIONESAO20232024_2.eachLayer(function(layer) {
@@ -249,16 +265,43 @@
                     // Si el ROL coincide, ajustar la vista del mapa y mostrar el popup
                     map.fitBounds(layer.getBounds());
                     layer.openPopup();
-                    searchMessageDiv.innerHTML = "";
                     found = true;
                     return; // Salir del bucle una vez encontrado
                 }
             });
 
             if (!found) {
-                searchMessageDiv.innerHTML = "ROL no encontrado. Por favor, intente con otro valor.";
-                searchMessageDiv.style.color = 'red';
+                rolSearchMessageDiv.innerHTML = "ROL no encontrado. Intente con otro valor.";
+                rolSearchMessageDiv.style.color = 'red';
             }
+        }
+
+        function searchCoordinates() {
+            var inputString = document.getElementById('coord-input').value.trim();
+            var coords = inputString.split(/\s+/).map(Number);
+
+            if (searchMarker) {
+                map.removeLayer(searchMarker);
+            }
+            
+            rolSearchMessageDiv.innerHTML = "";
+            coordSearchMessageDiv.innerHTML = "";
+
+            if (coords.length !== 2 || isNaN(coords[0]) || isNaN(coords[1]) || coords[0] < -90 || coords[0] > 90 || coords[1] < -180 || coords[1] > 180) {
+                coordSearchMessageDiv.innerHTML = "Formato no válido. Ingrese Latitud y Longitud separadas por un espacio.";
+                coordSearchMessageDiv.style.color = 'red';
+                return;
+            }
+
+            var latInput = coords[0];
+            var lonInput = coords[1];
+
+            var newCenter = L.latLng(latInput, lonInput);
+            map.setView(newCenter, 16);
+
+            searchMarker = L.marker(newCenter).addTo(map)
+                .bindPopup(`<b>Coordenadas buscadas</b><br>Lat: ${latInput.toFixed(6)}<br>Lon: ${lonInput.toFixed(6)}`)
+                .openPopup();
         }
 
         setBounds();

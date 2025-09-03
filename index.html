@@ -217,56 +217,56 @@
                     <button class="accordion-button">ESTADO LAGO</button>\
                     <div class="accordion-content">\
                         <p>' + (feature.properties['ESTADO LAG'] !== null ? autolinker.link(String(feature.properties['ESTADO LAG']).replace(/'/g, '\'').toLocaleString()) : 'N/A') + '</p>\
-                    </div>\
-                </div>\
+                    </div>
+                </div>
                 <div class="accordion-item">\
                     <button class="accordion-button">CONSTRUCCIONES</button>\
                     <div class="accordion-content">\
                         <p>' + (feature.properties['CONSTRUCCI'] !== null ? autolinker.link(String(feature.properties['CONSTRUCCI']).replace(/'/g, '\'').toLocaleString()) : 'N/A') + '</p>\
-                    </div>\
-                </div>\
+                    </div>
+                </div>
                 <div class="accordion-item">\
                     <button class="accordion-button">APROBACIÓN</button>\
                     <div class="accordion-content">\
                         <p>' + (feature.properties['APROBACION'] !== null ? autolinker.link(String(feature.properties['APROBACION']).replace(/'/g, '\'').toLocaleString()) : 'N/A') + '</p>\
-                    </div>\
-                </div>\
+                    </div>
+                </div>
                 <div class="accordion-item">\
                     <button class="accordion-button">FECHA</button>\
                     <div class="accordion-content">\
                         <p>' + (feature.properties['FECHA'] !== null ? autolinker.link(String(feature.properties['FECHA']).replace(/'/g, '\'').toLocaleString()) : 'N/A') + '</p>\
-                    </div>\
-                </div>\
+                    </div>
+                </div>
                 <div class="accordion-item">\
                     <button class="accordion-button">UBICACIÓN</button>\
                     <div class="accordion-content">\
                         <p>' + (feature.properties['UBICACIÓN'] !== null ? autolinker.link(String(feature.properties['UBICACIÓN']).replace(/'/g, '\'').toLocaleString()) : 'N/A') + '</p>\
-                    </div>\
-                </div>\
+                    </div>
+                </div>
                 <div class="accordion-item">\
                     <button class="accordion-button">PROPIETARIO</button>\
                     <div class="accordion-content">\
                         <p>' + (feature.properties['PROPIETARI'] !== null ? autolinker.link(String(feature.properties['PROPIETARI']).replace(/'/g, '\'').toLocaleString()) : 'N/A') + '</p>\
-                    </div>\
-                </div>\
+                    </div>
+                </div>
                 <div class="accordion-item">\
                     <button class="accordion-button">SUPERFICIE</button>\
                     <div class="accordion-content">\
                         <p>' + (feature.properties['SUPERFICIE'] !== null ? autolinker.link(String(feature.properties['SUPERFICIE']).replace(/'/g, '\'').toLocaleString()) : 'N/A') + '</p>\
-                    </div>\
-                </div>\
+                    </div>
+                </div>
                 <div class="accordion-item">\
                     <button class="accordion-button">DESTINO</button>\
                     <div class="accordion-content">\
                         <p>' + (feature.properties['DESTINO '] !== null ? autolinker.link(String(feature.properties['DESTINO ']).replace(/'/g, '\'').toLocaleString()) : 'N/A') + '</p>\
-                    </div>\
-                </div>\
+                    </div>
+                </div>
                 <div class="accordion-item">\
                     <button class="accordion-button">RECEPCIÓN</button>\
                     <div class="accordion-content">\
                         <p>' + (feature.properties['RECEPCIÓN'] !== null ? autolinker.link(String(feature.properties['RECEPCIÓN']).replace(/'/g, '\'').toLocaleString()) : 'N/A') + '</p>\
-                    </div>\
-                </div>\
+                    </div>
+                </div>
                 <div class="accordion-item">\
                     <button class="accordion-button">PELIGRO VOLCÁNICO</button>\
                     <div class="accordion-content">\
@@ -279,26 +279,45 @@
             propertyInfoDiv.innerHTML = popupContent;
             initializeAccordion();
         }
+        
+        // Estilo original del polígono
+        var defaultStyle = {
+            pane: 'pane_SUBDIVISIONESAO20232024_2',
+            opacity: 1,
+            color: 'rgba(255,1,1,1.0)',
+            dashArray: '',
+            lineCap: 'butt',
+            lineJoin: 'miter',
+            weight: 1.0,
+            fill: true,
+            fillOpacity: 1,
+            fillColor: 'rgba(114,155,111,0.0)',
+            interactive: true,
+        };
 
-        function style_SUBDIVISIONESAO20232024_2_0() {
-            return {
-                pane: 'pane_SUBDIVISIONESAO20232024_2',
-                opacity: 1,
-                color: 'rgba(255,1,1,1.0)',
-                dashArray: '',
-                lineCap: 'butt',
-                lineJoin: 'miter',
-                weight: 1.0,
-                fill: true,
-                fillOpacity: 1,
-                fillColor: 'rgba(114,155,111,0.0)',
-                interactive: true,
-            };
+        // Estilo de resaltado para la búsqueda
+        var highlightStyle = {
+            pane: 'pane_SUBDIVISIONESAO20232024_2',
+            opacity: 1,
+            color: 'rgba(0, 0, 255, 1.0)', // Color azul
+            dashArray: '',
+            lineCap: 'butt',
+            lineJoin: 'miter',
+            weight: 3.0, // Borde más grueso
+            fill: true,
+            fillOpacity: 0.2,
+            fillColor: 'rgba(0, 0, 255, 0.5)',
+            interactive: true,
+        };
+
+        function style_SUBDIVISIONESAO20232024_2_0(feature) {
+            return defaultStyle;
         }
 
         map.createPane('pane_SUBDIVISIONESAO20232024_2');
         map.getPane('pane_SUBDIVISIONESAO20232024_2').style.zIndex = 402;
         map.getPane('pane_SUBDIVISIONESAO20232024_2').style['mix-blend-mode'] = 'normal';
+        
         var layer_SUBDIVISIONESAO20232024_2 = new L.geoJson(json_SUBDIVISIONESAO20232024_2, {
             attribution: '',
             interactive: true,
@@ -313,12 +332,14 @@
                     pop_SUBDIVISIONESAO20232024_2(feature, layer);
                     map.fitBounds(e.target.getBounds());
                     
-                    if (searchMarker) {
-                        map.removeLayer(searchMarker);
+                    // Restaura el estilo del polígono anterior si existe
+                    if (highlightedLayer) {
+                        layer_SUBDIVISIONESAO20232024_2.resetStyle(highlightedLayer);
                     }
                     
-                    var center = e.target.getBounds().getCenter();
-                    searchMarker = L.marker(center).addTo(map);
+                    // Guarda la referencia al polígono actual y aplica el estilo de resaltado
+                    highlightedLayer = layer;
+                    layer.setStyle(highlightStyle);
                 });
             },
             style: style_SUBDIVISIONESAO20232024_2_0,
@@ -347,6 +368,7 @@
         lay.addTo(map);
 
         var coordinatesDiv = document.getElementById('coordinates');
+        var highlightedLayer = null; // Variable para almacenar el polígono resaltado
 
         map.on('mousemove', function(e) {
             var lat = e.latlng.lat.toFixed(6);
@@ -356,17 +378,7 @@
         
         var rolSearchMessageDiv = document.getElementById('rol-search-message');
         var coordSearchMessageDiv = document.getElementById('coord-search-message');
-        var searchMarker;
         
-        // Icono personalizado para el marcador
-        var rolIcon = L.icon({
-            iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png',
-            iconSize: [25, 41],
-            iconAnchor: [12, 41],
-            popupAnchor: [1, -34],
-            shadowSize: [41, 41]
-        });
-
         function populateDatalist() {
             var datalist = document.getElementById('rols-list');
             var roles = new Set();
@@ -390,9 +402,10 @@
             var rolInput = document.getElementById('rol-input').value.trim();
             var found = false;
             
-            if (searchMarker) {
-                map.removeLayer(searchMarker);
-                searchMarker = null;
+            // Restaura el estilo del polígono anterior si existe
+            if (highlightedLayer) {
+                layer_SUBDIVISIONESAO20232024_2.resetStyle(highlightedLayer);
+                highlightedLayer = null;
             }
             
             rolSearchMessageDiv.innerHTML = "";
@@ -403,9 +416,9 @@
                     map.fitBounds(layer.getBounds());
                     pop_SUBDIVISIONESAO20232024_2(layer.feature, layer);
                     
-                    var center = layer.getBounds().getCenter();
-                    searchMarker = L.marker(center, {icon: rolIcon}).addTo(map);
-                    searchMarker.bindPopup("ROL: " + rolInput).openPopup();
+                    // Guarda la referencia al polígono actual y aplica el estilo de resaltado
+                    highlightedLayer = layer;
+                    layer.setStyle(highlightStyle);
                     
                     found = true;
                     return;
@@ -422,9 +435,10 @@
             var inputString = document.getElementById('coord-input').value.trim();
             var coords = inputString.split(/\s+/).map(Number);
 
-            if (searchMarker) {
-                map.removeLayer(searchMarker);
-                searchMarker = null;
+            // Restaura el estilo del polígono anterior si existe
+            if (highlightedLayer) {
+                layer_SUBDIVISIONESAO20232024_2.resetStyle(highlightedLayer);
+                highlightedLayer = null;
             }
             
             rolSearchMessageDiv.innerHTML = "";
@@ -442,16 +456,12 @@
 
             var newCenter = L.latLng(latInput, lonInput);
             map.setView(newCenter, 16);
-
-            searchMarker = L.marker(newCenter).addTo(map)
-                .bindPopup(`<b>Coordenadas buscadas</b><br>Lat: ${latInput.toFixed(6)}<br>Lon: ${lonInput.toFixed(6)}`)
-                .openPopup();
         }
         
         map.on('click', function() {
-            if (searchMarker) {
-                map.removeLayer(searchMarker);
-                searchMarker = null;
+            if (highlightedLayer) {
+                layer_SUBDIVISIONESAO20232024_2.resetStyle(highlightedLayer);
+                highlightedLayer = null;
             }
         });
         

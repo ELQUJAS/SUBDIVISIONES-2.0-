@@ -351,6 +351,7 @@
         map.getPane('pane_SUBDIVISIONESAO20232024_2').style['mix-blend-mode'] = 'normal';
         
         var highlightedLayer = null;
+        var coordMarker = null;
 
         var layer_SUBDIVISIONESAO20232024_2 = new L.geoJson(json_SUBDIVISIONESAO20232024_2, {
             attribution: '',
@@ -369,33 +370,32 @@
                 
                 layer.on({
                     click: function (e) {
-                        // Resetea el estilo del polígono previamente seleccionado
                         if (highlightedLayer) {
                             layer_SUBDIVISIONESAO20232024_2.resetStyle(highlightedLayer);
                         }
                         
-                        // Resalta el nuevo polígono seleccionado
                         e.target.setStyle(highlightStyle);
                         highlightedLayer = e.target;
                         
-                        // Muestra la información en la barra lateral
                         pop_SUBDIVISIONESAO20232024_2(e.target.feature, e.target);
                         
-                        // Centra el mapa en el polígono seleccionado
                         map.fitBounds(e.target.getBounds());
+
+                        // Remove coordMarker if it exists
+                        if (coordMarker) {
+                            map.removeLayer(coordMarker);
+                            coordMarker = null;
+                        }
                         
-                        // Evita que el evento se propague al mapa
                         L.DomEvent.stopPropagation(e);
                     },
                     mouseover: function (e) {
-                        // Cambia el estilo al pasar el mouse si no está seleccionado
                         if (e.target !== highlightedLayer) {
                             e.target.setStyle(hoverStyle);
                         }
                         e.target.openTooltip();
                     },
                     mouseout: function (e) {
-                        // Restaura el estilo al quitar el mouse si no está seleccionado
                         if (e.target !== highlightedLayer) {
                             layer_SUBDIVISIONESAO20232024_2.resetStyle(e.target);
                         }
@@ -436,12 +436,15 @@
             coordinatesDiv.innerHTML = `Latitud: ${lat}<br>Longitud: ${lng}`;
         });
         
-        // Maneja el clic en el mapa para deseleccionar el polígono y limpiar la barra lateral
         map.on('click', function() {
             if (highlightedLayer) {
                 layer_SUBDIVISIONESAO20232024_2.resetStyle(highlightedLayer);
                 highlightedLayer = null;
                 document.getElementById('property-info').innerHTML = '';
+            }
+            if (coordMarker) {
+                map.removeLayer(coordMarker);
+                coordMarker = null;
             }
         });
 
@@ -476,6 +479,11 @@
                 highlightedLayer = null;
             }
             
+            if (coordMarker) {
+                map.removeLayer(coordMarker);
+                coordMarker = null;
+            }
+            
             rolSearchMessageDiv.innerHTML = "";
             coordSearchMessageDiv.innerHTML = "";
             
@@ -501,7 +509,11 @@
         function searchCoordinates() {
             var inputString = document.getElementById('coord-input').value.trim();
             var coords = inputString.split(/\s+/).map(Number);
-
+            
+            if (coordMarker) {
+                map.removeLayer(coordMarker);
+            }
+            
             if (highlightedLayer) {
                 layer_SUBDIVISIONESAO20232024_2.resetStyle(highlightedLayer);
                 highlightedLayer = null;
@@ -511,7 +523,7 @@
             coordSearchMessageDiv.innerHTML = "";
             document.getElementById('property-info').innerHTML = '';
 
-            if (coords.length !== 2 || isNaN(coords[0]) || isNaN(coords[1]) || coords[0] < -90 || coords[0] > 90 || coords[1] < -180 || coords[1] > 180) {
+            if (coords.length !== 2 || isNaN(coords[0]) || isNaN(coords[1])) {
                 coordSearchMessageDiv.innerHTML = "Formato no válido. Ingrese Latitud y Longitud separadas por un espacio.";
                 coordSearchMessageDiv.style.color = 'red';
                 return;
@@ -522,6 +534,45 @@
 
             var newCenter = L.latLng(latInput, lonInput);
             map.setView(newCenter, 16);
+
+            var customIcon = L.icon({
+                iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png',
+                iconSize: [25, 41],
+                iconAnchor: [12, 41],
+                popupAnchor: [1, -34],
+                tooltipAnchor: [16, -28],
+                shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+                shadowSize: [41, 41]
+            });
+
+            coordMarker = L.marker(newCenter, {icon: customIcon}).addTo(map);
+
+            var foundFeature = null;
+            var foundLayer = null;
+            layer_SUBDIVISIONESAO20232024_2.eachLayer(function(layer) {
+                if (layer.getBounds().contains(newCenter)) {
+                    foundFeature = layer.feature;
+                    foundLayer = layer;
+                    return;
+                }
+            });
+
+            if (foundFeature && foundFeature.properties['ROL']) {
+                coordMarker.bindTooltip("ROL: " + foundFeature.properties['ROL'], {
+                    permanent: false,
+                    direction: 'top',
+                    offset: [0, -35]
+                }).openTooltip();
+                pop_SUBDIVISIONESAO20232024_2(foundFeature, foundLayer);
+                highlightedLayer = foundLayer;
+                foundLayer.setStyle(highlightStyle);
+            } else {
+                coordMarker.bindTooltip("No se encontró ROL", {
+                    permanent: false,
+                    direction: 'top',
+                    offset: [0, -35]
+                }).openTooltip();
+            }
         }
         
         function initializeAccordion() {

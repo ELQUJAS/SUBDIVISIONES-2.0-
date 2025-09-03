@@ -218,82 +218,85 @@
         map.addLayer(layer_GoogleSatellite_1);
 
         function pop_SUBDIVISIONESAO20232024_2(feature, layer) {
+            var popupContent = '<div>\
+                <h4>ROL: ' + (feature.properties['ROL'] !== null ? String(feature.properties['ROL']) : '') + '</h4>\
+                <div class="accordion-item">\
+                    <button class="accordion-button">ZONA PRI</button>\
+                    <div class="accordion-content">\
+                        <p>' + (feature.properties['ZONA PRI'] !== null ? autolinker.link(String(feature.properties['ZONA PRI']).replace(/'/g, '\'').toLocaleString()) : 'N/A') + '</p>\
+                    </div>\
+                </div>\
+                <div class="accordion-item">\
+                    <button class="accordion-button">ZONA</button>\
+                    <div class="accordion-content">\
+                        <p>' + (feature.properties['ZONA'] !== null ? autolinker.link(String(feature.properties['ZONA']).replace(/'/g, '\'').toLocaleString()) : 'N/A') + '</p>\
+                    ' +
+                '</div>\
+                <div class="accordion-item">\
+                    <button class="accordion-button">ESTADO LAGO</button>\
+                    <div class="accordion-content">\
+                        <p>' + (feature.properties['ESTADO LAG'] !== null ? autolinker.link(String(feature.properties['ESTADO LAG']).replace(/'/g, '\'').toLocaleString()) : 'N/A') + '</p>\
+                    </div>\
+                </div>\
+                <div class="accordion-item">\
+                    <button class="accordion-button">CONSTRUCCIONES</button>\
+                    <div class="accordion-content">\
+                        <p>' + (feature.properties['CONSTRUCCI'] !== null ? autolinker.link(String(feature.properties['CONSTRUCCI']).replace(/'/g, '\'').toLocaleString()) : 'N/A') + '</p>\
+                    </div>\
+                </div>\
+                <div class="accordion-item">\
+                    <button class="accordion-button">APROBACIÓN</button>\
+                    <div class="accordion-content">\
+                        <p>' + (feature.properties['APROBACION'] !== null ? autolinker.link(String(feature.properties['APROBACION']).replace(/'/g, '\'').toLocaleString()) : 'N/A') + '</p>\
+                    </div>\
+                </div>\
+                <div class="accordion-item">\
+                    <button class="accordion-button">FECHA</button>\
+                    <div class="accordion-content">\
+                        <p>' + (feature.properties['FECHA'] !== null ? autolinker.link(String(feature.properties['FECHA']).replace(/'/g, '\'').toLocaleString()) : 'N/A') + '</p>\
+                    </div>\
+                </div>\
+                <div class="accordion-item">\
+                    <button class="accordion-button">UBICACIÓN</button>\
+                    <div class="accordion-content">\
+                        <p>' + (feature.properties['UBICACIÓN'] !== null ? autolinker.link(String(feature.properties['UBICACIÓN']).replace(/'/g, '\'').toLocaleString()) : 'N/A') + '</p>\
+                    </div>\
+                ' +
+                '</div>\
+                <div class="accordion-item">\
+                    <button class="accordion-button">PROPIETARIO</button>\
+                    <div class="accordion-content">\
+                        <p>' + (feature.properties['PROPIETARI'] !== null ? autolinker.link(String(feature.properties['PROPIETARI']).replace(/'/g, '\'').toLocaleString()) : 'N/A') + '</p>\
+                    </div>\
+                </div>\
+                <div class="accordion-item">\
+                    <button class="accordion-button">SUPERFICIE</button>\
+                    <div class="accordion-content">\
+                        <p>' + (feature.properties['SUPERFICIE'] !== null ? autolinker.link(String(feature.properties['SUPERFICIE']).replace(/'/g, '\'').toLocaleString()) : 'N/A') + '</p>\
+                    </div>\
+                </div>\
+                <div class="accordion-item">\
+                    <button class="accordion-button">DESTINO</button>\
+                    <div class="accordion-content">\
+                        <p>' + (feature.properties['DESTINO '] !== null ? autolinker.link(String(feature.properties['DESTINO ']).replace(/'/g, '\'').toLocaleString()) : 'N/A') + '</p>\
+                    </div>\
+                </div>\
+                <div class="accordion-item">\
+                    <button class="accordion-button">RECEPCIÓN</button>\
+                    <div class="accordion-content">\
+                        <p>' + (feature.properties['RECEPCIÓN'] !== null ? autolinker.link(String(feature.properties['RECEPCIÓN']).replace(/'/g, '\'').toLocaleString()) : 'N/A') + '</p>\
+                    </div>\
+                </div>\
+                <div class="accordion-item">\
+                    <button class="accordion-button">PELIGRO VOLCÁNICO</button>\
+                    <div class="accordion-content">\
+                        <p>' + (feature.properties['PELIGRO VO'] !== null ? autolinker.link(String(feature.properties['PELIGRO VO']).replace(/'/g, '\'').toLocaleString()) : 'N/A') + '</p>\
+                    </div>\
+                </div>\
+            </div>';
+
             var propertyInfoDiv = document.getElementById('property-info');
-            propertyInfoDiv.innerHTML = '<div>' +
-                '<h4>ROL: ' + (feature.properties['ROL'] !== null ? String(feature.properties['ROL']) : '') + '</h4>' +
-                '<div class="accordion-item">' +
-                    '<button class="accordion-button">ZONA PRI</button>' +
-                    '<div class="accordion-content">' +
-                        '<p>' + (feature.properties['ZONA PRI'] !== null ? autolinker.link(String(feature.properties['ZONA PRI']).replace(/'/g, '\'').toLocaleString()) : 'N/A') + '</p>' +
-                    '</div>' +
-                '</div>' +
-                '<div class="accordion-item">' +
-                    '<button class="accordion-button">ZONA</button>' +
-                    '<div class="accordion-content">' +
-                        '<p>' + (feature.properties['ZONA'] !== null ? autolinker.link(String(feature.properties['ZONA']).replace(/'/g, '\'').toLocaleString()) : 'N/A') + '</p>' +
-                    '</div>' +
-                '</div>' +
-                '<div class="accordion-item">' +
-                    '<button class="accordion-button">ESTADO LAGO</button>' +
-                    '<div class="accordion-content">' +
-                        '<p>' + (feature.properties['ESTADO LAG'] !== null ? autolinker.link(String(feature.properties['ESTADO LAG']).replace(/'/g, '\'').toLocaleString()) : 'N/A') + '</p>' +
-                    '</div>' +
-                '</div>' +
-                '<div class="accordion-item">' +
-                    '<button class="accordion-button">CONSTRUCCIONES</button>' +
-                    '<div class="accordion-content">' +
-                        '<p>' + (feature.properties['CONSTRUCCI'] !== null ? autolinker.link(String(feature.properties['CONSTRUCCI']).replace(/'/g, '\'').toLocaleString()) : 'N/A') + '</p>' +
-                    '</div>' +
-                '</div>' +
-                '<div class="accordion-item">' +
-                    '<button class="accordion-button">APROBACIÓN</button>' +
-                    '<div class="accordion-content">' +
-                        '<p>' + (feature.properties['APROBACION'] !== null ? autolinker.link(String(feature.properties['APROBACION']).replace(/'/g, '\'').toLocaleString()) : 'N/A') + '</p>' +
-                    '</div>' +
-                '</div>' +
-                '<div class="accordion-item">' +
-                    '<button class="accordion-button">FECHA</button>' +
-                    '<div class="accordion-content">' +
-                        '<p>' + (feature.properties['FECHA'] !== null ? autolinker.link(String(feature.properties['FECHA']).replace(/'/g, '\'').toLocaleString()) : 'N/A') + '</p>' +
-                    '</div>' +
-                '</div>' +
-                '<div class="accordion-item">' +
-                    '<button class="accordion-button">UBICACIÓN</button>' +
-                    '<div class="accordion-content">' +
-                        '<p>' + (feature.properties['UBICACIÓN'] !== null ? autolinker.link(String(feature.properties['UBICACIÓN']).replace(/'/g, '\'').toLocaleString()) : 'N/A') + '</p>' +
-                    '</div>' +
-                '</div>' +
-                '<div class="accordion-item">' +
-                    '<button class="accordion-button">PROPIETARIO</button>' +
-                    '<div class="accordion-content">' +
-                        '<p>' + (feature.properties['PROPIETARI'] !== null ? autolinker.link(String(feature.properties['PROPIETARI']).replace(/'/g, '\'').toLocaleString()) : 'N/A') + '</p>' +
-                    '</div>' +
-                '</div>' +
-                '<div class="accordion-item">' +
-                    '<button class="accordion-button">SUPERFICIE</button>' +
-                    '<div class="accordion-content">' +
-                        '<p>' + (feature.properties['SUPERFICIE'] !== null ? autolinker.link(String(feature.properties['SUPERFICIE']).replace(/'/g, '\'').toLocaleString()) : 'N/A') + '</p>' +
-                    '</div>' +
-                '</div>' +
-                '<div class="accordion-item">' +
-                    '<button class="accordion-button">DESTINO</button>' +
-                    '<div class="accordion-content">' +
-                        '<p>' + (feature.properties['DESTINO '] !== null ? autolinker.link(String(feature.properties['DESTINO ']).replace(/'/g, '\'').toLocaleString()) : 'N/A') + '</p>' +
-                    '</div>' +
-                '</div>' +
-                '<div class="accordion-item">' +
-                    '<button class="accordion-button">RECEPCIÓN</button>' +
-                    '<div class="accordion-content">' +
-                        '<p>' + (feature.properties['RECEPCIÓN'] !== null ? autolinker.link(String(feature.properties['RECEPCIÓN']).replace(/'/g, '\'').toLocaleString()) : 'N/A') + '</p>' +
-                    '</div>' +
-                '</div>' +
-                '<div class="accordion-item">' +
-                    '<button class="accordion-button">PELIGRO VOLCÁNICO</button>' +
-                    '<div class="accordion-content">' +
-                        '<p>' + (feature.properties['PELIGRO VO'] !== null ? autolinker.link(String(feature.properties['PELIGRO VO']).replace(/'/g, '\'').toLocaleString()) : 'N/A') + '</p>' +
-                    '</div>' +
-                '</div>' +
-            '</div>';
+            propertyInfoDiv.innerHTML = popupContent;
             initializeAccordion();
         }
         

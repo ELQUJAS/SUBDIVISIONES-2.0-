@@ -255,7 +255,7 @@
                         <p><b>Fecha:</b> ' + (feature.properties['FECHA'] !== null ? autolinker.link(String(feature.properties['FECHA']).replace(/'/g, '\'').toLocaleString()) : 'N/A') + '</p>\
                         <p><b>Ubicación:</b> ' + (feature.properties['UBICACIÓN'] !== null ? autolinker.link(String(feature.properties['UBICACIÓN']).replace(/'/g, '\'').toLocaleString()) : 'N/A') + '</p>\
                         <p><b>Propietario:</b> ' + (feature.properties['PROPIETARI'] !== null ? autolinker.link(String(feature.properties['PROPIETARI']).replace(/'/g, '\'').toLocaleString()) : 'N/A') + '</p>\
-                        <p><b>Superficie:</b> ' + (feature.properties['SUPERFICIE'] !== null ? autolinker.link(String(feature.properties['SUPERFICIE']).replace(/'/g, '\'').toLocaleString()) : 'N/A') + '</p>\
+                        <p><b>SUPERFICIE (MT2):</b> ' + (feature.properties['SUPERFICIE'] !== null ? autolinker.link(String(feature.properties['SUPERFICIE']).replace(/'/g, '\'').toLocaleString()) : 'N/A') + '</p>\
                         <p><b>Destino:</b> ' + (feature.properties['DESTINO '] !== null ? autolinker.link(String(feature.properties['DESTINO ']).replace(/'/g, '\'').toLocaleString()) : 'N/A') + '</p>\
                         <p><b>Recepción:</b> ' + (feature.properties['RECEPCIÓN'] !== null ? autolinker.link(String(feature.properties['RECEPCIÓN']).replace(/'/g, '\'').toLocaleString()) : 'N/A') + '</p>\
                     </div>\
@@ -533,7 +533,7 @@
 
             if (foundFeature && foundFeature.properties['ROL']) {
                 coordMarker.bindTooltip("ROL: " + foundFeature.properties['ROL'], {
-                    permanent: false,
+                    permanent: true,
                     direction: 'top',
                     offset: [0, -35]
                 }).openTooltip();
@@ -542,10 +542,12 @@
                 foundLayer.setStyle(highlightStyle);
             } else {
                 coordMarker.bindTooltip("No se encontró ROL", {
-                    permanent: false,
+                    permanent: true,
                     direction: 'top',
                     offset: [0, -35]
                 }).openTooltip();
+                coordSearchMessageDiv.innerHTML = "No se encontró ROL para esta coordenada.";
+                coordSearchMessageDiv.style.color = 'red';
             }
         }
         

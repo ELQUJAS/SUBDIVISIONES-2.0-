@@ -45,7 +45,7 @@
             box-shadow: -2px 0 5px rgba(0,0,0,0.1);
             overflow-y: auto;
             z-index: 900;
-            height: 100vh; /* Asegura que la barra lateral tenga la altura completa */
+            height: 100vh;
             box-sizing: border-box;
         }
         .search-box {
@@ -123,6 +123,19 @@
         .accordion-button.active::before {
             transform: rotate(90deg);
         }
+
+        /* Custom style for the white ROL tooltip */
+        .white-tooltip {
+            color: white;
+            font-weight: bold;
+            background-color: rgba(0, 0, 0, 0.6);
+            border: 1px solid white;
+        }
+        /* Style for the tooltip arrow */
+        .leaflet-tooltip-bottom:before, .leaflet-tooltip-top:before, .leaflet-tooltip-left:before, .leaflet-tooltip-right:before {
+            border-top-color: rgba(0, 0, 0, 0.6) !important;
+        }
+
     </style>
     <title>Visor de Coordenadas y Roles</title>
 </head>
@@ -147,7 +160,7 @@
             </div>
             
             <div id="property-info">
-                </div>
+            </div>
         </div>
     </div>
 
@@ -300,6 +313,7 @@
             interactive: true,
         };
 
+        // Style for when a polygon is clicked and highlighted
         var highlightStyle = {
             pane: 'pane_SUBDIVISIONESAO20232024_2',
             opacity: 1,
@@ -311,6 +325,21 @@
             fill: true,
             fillOpacity: 0.2,
             fillColor: 'rgba(0, 0, 255, 0.5)',
+            interactive: true,
+        };
+
+        // Style for when a polygon is hovered over
+        var hoverStyle = {
+            pane: 'pane_SUBDIVISIONESAO20232024_2',
+            opacity: 1,
+            color: 'rgba(255,255,255,1.0)', // White border on hover
+            dashArray: '',
+            lineCap: 'butt',
+            lineJoin: 'miter',
+            weight: 2.0,
+            fill: true,
+            fillOpacity: 0.2,
+            fillColor: 'rgba(255,255,255,0.5)', // Light white fill on hover
             interactive: true,
         };
 
@@ -330,8 +359,25 @@
             pane: 'pane_SUBDIVISIONESAO20232024_2',
             onEachFeature: function (feature, layer) {
                 if (feature.properties['ROL']) {
-                    layer.bindTooltip("ROL: " + feature.properties['ROL'], { permanent: false, direction: 'center' });
+                    layer.bindTooltip("ROL: " + feature.properties['ROL'], {
+                        permanent: false,
+                        direction: 'center',
+                        className: 'white-tooltip'
+                    });
                 }
+                layer.on('mouseover', function(e) {
+                    e.target.setStyle(hoverStyle);
+                    e.target.openTooltip();
+                });
+                layer.on('mouseout', function(e) {
+                    // Only reset style if it's not the currently clicked and highlighted layer
+                    if (highlightedLayer && e.target !== highlightedLayer) {
+                         layer_SUBDIVISIONESAO20232024_2.resetStyle(e.target);
+                    } else if (!highlightedLayer) {
+                        layer_SUBDIVISIONESAO20232024_2.resetStyle(e.target);
+                    }
+                    e.target.closeTooltip();
+                });
                 layer.on('click', function(e) {
                     pop_SUBDIVISIONESAO20232024_2(feature, layer);
                     map.fitBounds(e.target.getBounds());
@@ -461,6 +507,7 @@
             if (highlightedLayer) {
                 layer_SUBDIVISIONESAO20232024_2.resetStyle(highlightedLayer);
                 highlightedLayer = null;
+                document.getElementById('property-info').innerHTML = '';
             }
         });
         

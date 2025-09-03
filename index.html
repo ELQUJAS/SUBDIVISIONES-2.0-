@@ -17,10 +17,15 @@
             height: 100%;
             padding: 0;
             margin: 0;
+        }
+        #container {
             display: flex;
+            width: 100%;
+            height: 100%;
         }
         #map {
             flex-grow: 1;
+            height: 100%;
         }
         #coordinates {
             position: absolute;
@@ -40,7 +45,7 @@
             box-shadow: -2px 0 5px rgba(0,0,0,0.1);
             overflow-y: auto;
             font-family: Arial, sans-serif;
-            z-index: 900; /* Asegura que la barra lateral esté por encima del mapa */
+            z-index: 900;
         }
         .search-box {
             background: #f9f9f9;
@@ -122,26 +127,28 @@
     <title>Visor de Coordenadas y Roles</title>
 </head>
 <body>
-    <div id="map"></div>
-    <div id="coordinates">Mueva el mouse sobre el mapa para ver las coordenadas.</div>
-    
-    <div id="sidebar">
-        <div class="search-box">
-            <h4>Búsqueda por ROL</h4>
-            <input type="text" id="rol-input" placeholder="Buscar por ROL" list="rols-list">
-            <datalist id="rols-list"></datalist>
-            <button onclick="searchRol()">Buscar</button>
-            <div id="rol-search-message" class="search-message"></div>
-        </div>
-        <div class="search-box">
-            <h4>Búsqueda por Coordenadas</h4>
-            <input type="text" id="coord-input" placeholder="Ej: -39.16 -72.25">
-            <button onclick="searchCoordinates()">Buscar</button>
-            <div id="coord-search-message" class="search-message"></div>
-        </div>
+    <div id="container">
+        <div id="map"></div>
+        <div id="coordinates">Mueva el mouse sobre el mapa para ver las coordenadas.</div>
         
-        <div id="property-info">
+        <div id="sidebar">
+            <div class="search-box">
+                <h4>Búsqueda por ROL</h4>
+                <input type="text" id="rol-input" placeholder="Buscar por ROL" list="rols-list">
+                <datalist id="rols-list"></datalist>
+                <button onclick="searchRol()">Buscar</button>
+                <div id="rol-search-message" class="search-message"></div>
             </div>
+            <div class="search-box">
+                <h4>Búsqueda por Coordenadas</h4>
+                <input type="text" id="coord-input" placeholder="Ej: -39.16 -72.25">
+                <button onclick="searchCoordinates()">Buscar</button>
+                <div id="coord-search-message" class="search-message"></div>
+            </div>
+            
+            <div id="property-info">
+                </div>
+        </div>
     </div>
 
     <script src="js/qgis2web_expressions.js"></script>
@@ -216,8 +223,8 @@
                     <button class="accordion-button">ESTADO LAGO</button>\
                     <div class="accordion-content">\
                         <p>' + (feature.properties['ESTADO LAG'] !== null ? autolinker.link(String(feature.properties['ESTADO LAG']).replace(/'/g, '\'').toLocaleString()) : 'N/A') + '</p>\
-                    </div>
-                </div>
+                    </div>\
+                </div>\
                 <div class="accordion-item">\
                     <button class="accordion-button">CONSTRUCCIONES</button>\
                     <div class="accordion-content">\

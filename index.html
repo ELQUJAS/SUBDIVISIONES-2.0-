@@ -217,6 +217,7 @@
         });
         map.addLayer(layer_GoogleSatellite_1);
 
+        // Modificación: La función pop_SUBDIVISIONESAO20232024_2 ahora carga la info en la barra lateral
         function pop_SUBDIVISIONESAO20232024_2(feature, layer) {
             var popupContent = '<div>\
                 <h4>ROL: ' + (feature.properties['ROL'] !== null ? String(feature.properties['ROL']) : '') + '</h4>\
@@ -370,7 +371,7 @@
                     e.target.openTooltip();
                 });
                 layer.on('mouseout', function(e) {
-                    // Only reset style if it's not the currently clicked and highlighted layer
+                    // Solo restablece el estilo si no es el polígono actualmente seleccionado
                     if (highlightedLayer && e.target !== highlightedLayer) {
                          layer_SUBDIVISIONESAO20232024_2.resetStyle(e.target);
                     } else if (!highlightedLayer) {
@@ -379,13 +380,16 @@
                     e.target.closeTooltip();
                 });
                 layer.on('click', function(e) {
+                    // Llama a la función que ahora carga la información en la barra lateral
                     pop_SUBDIVISIONESAO20232024_2(feature, layer);
                     map.fitBounds(e.target.getBounds());
                     
+                    // Restablece el estilo del polígono previamente seleccionado
                     if (highlightedLayer) {
                         layer_SUBDIVISIONESAO20232024_2.resetStyle(highlightedLayer);
                     }
                     
+                    // Guarda y aplica el estilo de resaltado al nuevo polígono seleccionado
                     highlightedLayer = layer;
                     layer.setStyle(highlightStyle);
                 });

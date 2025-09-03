@@ -40,6 +40,7 @@
             box-shadow: -2px 0 5px rgba(0,0,0,0.1);
             overflow-y: auto;
             font-family: Arial, sans-serif;
+            z-index: 900; /* Asegura que la barra lateral esté por encima del mapa */
         }
         .search-box {
             background: #f9f9f9;
@@ -161,12 +162,12 @@
         });
         var hash = new L.Hash(map);
         map.attributionControl.setPrefix('<a href="https://github.com/tomchadwin/qgis2web" target="_blank">qgis2web</a> &middot; <a href="https://leafletjs.com" title="A JS library for interactive maps">Leaflet</a> &middot; <a href="https://qgis.org">QGIS</a>');
-        var autolinker = new Autolinker({truncate: {length: 30, location: 'smart'}});
 
         var zoomControl = L.control.zoom({
             position: 'topleft'
         }).addTo(map);
 
+        var autolinker = new Autolinker({truncate: {length: 30, location: 'smart'}});
         var bounds_group = new L.featureGroup([]);
         function setBounds() {}
 
@@ -181,7 +182,6 @@
             minNativeZoom: 0,
             maxNativeZoom: 19
         });
-        layer_OpenStreetMap_0;
         map.addLayer(layer_OpenStreetMap_0);
 
         map.createPane('pane_GoogleSatellite_1');
@@ -195,7 +195,6 @@
             minNativeZoom: 0,
             maxNativeZoom: 19
         });
-        layer_GoogleSatellite_1;
         map.addLayer(layer_GoogleSatellite_1);
 
         function pop_SUBDIVISIONESAO20232024_2(feature, layer) {
@@ -280,7 +279,6 @@
             initializeAccordion();
         }
         
-        // Estilo original del polígono
         var defaultStyle = {
             pane: 'pane_SUBDIVISIONESAO20232024_2',
             opacity: 1,
@@ -295,15 +293,14 @@
             interactive: true,
         };
 
-        // Estilo de resaltado para la búsqueda
         var highlightStyle = {
             pane: 'pane_SUBDIVISIONESAO20232024_2',
             opacity: 1,
-            color: 'rgba(0, 0, 255, 1.0)', // Color azul
+            color: 'rgba(0, 0, 255, 1.0)',
             dashArray: '',
             lineCap: 'butt',
             lineJoin: 'miter',
-            weight: 3.0, // Borde más grueso
+            weight: 3.0,
             fill: true,
             fillOpacity: 0.2,
             fillColor: 'rgba(0, 0, 255, 0.5)',
@@ -332,12 +329,10 @@
                     pop_SUBDIVISIONESAO20232024_2(feature, layer);
                     map.fitBounds(e.target.getBounds());
                     
-                    // Restaura el estilo del polígono anterior si existe
                     if (highlightedLayer) {
                         layer_SUBDIVISIONESAO20232024_2.resetStyle(highlightedLayer);
                     }
                     
-                    // Guarda la referencia al polígono actual y aplica el estilo de resaltado
                     highlightedLayer = layer;
                     layer.setStyle(highlightStyle);
                 });
@@ -368,7 +363,7 @@
         lay.addTo(map);
 
         var coordinatesDiv = document.getElementById('coordinates');
-        var highlightedLayer = null; // Variable para almacenar el polígono resaltado
+        var highlightedLayer = null;
 
         map.on('mousemove', function(e) {
             var lat = e.latlng.lat.toFixed(6);
@@ -402,7 +397,6 @@
             var rolInput = document.getElementById('rol-input').value.trim();
             var found = false;
             
-            // Restaura el estilo del polígono anterior si existe
             if (highlightedLayer) {
                 layer_SUBDIVISIONESAO20232024_2.resetStyle(highlightedLayer);
                 highlightedLayer = null;
@@ -416,7 +410,6 @@
                     map.fitBounds(layer.getBounds());
                     pop_SUBDIVISIONESAO20232024_2(layer.feature, layer);
                     
-                    // Guarda la referencia al polígono actual y aplica el estilo de resaltado
                     highlightedLayer = layer;
                     layer.setStyle(highlightStyle);
                     
@@ -435,7 +428,6 @@
             var inputString = document.getElementById('coord-input').value.trim();
             var coords = inputString.split(/\s+/).map(Number);
 
-            // Restaura el estilo del polígono anterior si existe
             if (highlightedLayer) {
                 layer_SUBDIVISIONESAO20232024_2.resetStyle(highlightedLayer);
                 highlightedLayer = null;

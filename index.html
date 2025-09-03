@@ -12,11 +12,15 @@
     <link rel="stylesheet" href="css/fontawesome-all.min.css">
     <link rel="stylesheet" href="css/leaflet.photon.css">
     <style>
-        html, body, #map {
+        html, body {
             width: 100%;
             height: 100%;
             padding: 0;
             margin: 0;
+            display: flex; /* Utiliza flexbox para alinear el mapa y la barra lateral */
+        }
+        #map {
+            flex-grow: 1; /* El mapa ocupará todo el espacio restante */
         }
         #coordinates {
             position: absolute;
@@ -29,29 +33,35 @@
             font-family: Arial, sans-serif;
             font-size: 14px;
         }
-        #search-container {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            z-index: 1000;
-            margin-top: 100px;
+
+        /* Estilos para la barra lateral */
+        #sidebar {
+            width: 350px; /* Ancho de la barra lateral */
+            background: #fff;
+            padding: 15px;
+            box-shadow: -2px 0 5px rgba(0,0,0,0.1);
+            overflow-y: auto; /* Permite el scroll si el contenido es largo */
+            font-family: Arial, sans-serif;
         }
+
         .search-box {
-            background: rgba(255, 255, 255, 0.9);
+            background: #f9f9f9;
             padding: 10px;
             border-radius: 5px;
-            font-family: Arial, sans-serif;
-            margin-top: 5px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
         }
         .search-box input {
-            width: 200px;
-            padding: 5px;
-            margin-right: 5px;
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 5px;
+            box-sizing: border-box;
             border: 1px solid #ccc;
             border-radius: 3px;
         }
         .search-box button {
-            padding: 5px 10px;
+            width: 100%;
+            padding: 8px;
             border: none;
             background-color: #0078A8;
             color: white;
@@ -67,6 +77,10 @@
             color: #d9534f;
         }
 
+        #property-info {
+            padding-top: 10px;
+        }
+        
         /* Estilos para el acordeón del popup */
         .accordion-item {
             border: none;
@@ -116,18 +130,23 @@
     <div id="map"></div>
     <div id="coordinates">Mueva el mouse sobre el mapa para ver las coordenadas.</div>
     
-    <div id="search-container">
+    <div id="sidebar">
         <div class="search-box">
+            <h4>Búsqueda por ROL</h4>
             <input type="text" id="rol-input" placeholder="Buscar por ROL" list="rols-list">
             <datalist id="rols-list"></datalist>
             <button onclick="searchRol()">Buscar</button>
             <div id="rol-search-message" class="search-message"></div>
         </div>
         <div class="search-box">
+            <h4>Búsqueda por Coordenadas</h4>
             <input type="text" id="coord-input" placeholder="Ej: -39.16 -72.25">
             <button onclick="searchCoordinates()">Buscar</button>
             <div id="coord-search-message" class="search-message"></div>
         </div>
+        
+        <div id="property-info">
+            </div>
     </div>
 
     <script src="js/qgis2web_expressions.js"></script>
@@ -186,6 +205,7 @@
         map.addLayer(layer_GoogleSatellite_1);
 
         function pop_SUBDIVISIONESAO20232024_2(feature, layer) {
+            // El contenido del pop-up se genera y se inyecta en el panel lateral
             var popupContent = '<div>\
                 <h4>ROL: ' + (feature.properties['ROL'] !== null ? String(feature.properties['ROL']) : '') + '</h4>\
                 <div class="accordion-item">\
@@ -261,7 +281,12 @@
                     </div>\
                 </div>\
             </div>';
-            layer.bindPopup(popupContent, { maxHeight: 400 });
+
+            var propertyInfoDiv = document.getElementById('property-info');
+            propertyInfoDiv.innerHTML = popupContent;
+
+            // Al abrir el "pop-up" lateral, inicializa los acordeones
+            initializeAccordion();
         }
 
         function style_SUBDIVISIONESAO20232024_2_0() {
@@ -289,7 +314,12 @@
             dataVar: 'json_SUBDIVISIONESAO20232024_2',
             layerName: 'layer_SUBDIVISIONESAO20232024_2',
             pane: 'pane_SUBDIVISIONESAO20232024_2',
-            onEachFeature: pop_SUBDIVISIONESAO20232024_2,
+            onEachFeature: function (feature, layer) {
+                // Al hacer clic en un polígono, se llama a la función para llenar el panel lateral
+                layer.on('click', function(e) {
+                    pop_SUBDIVISIONESAO20232024_2(feature, layer);
+                });
+            },
             style: style_SUBDIVISIONESAO20232024_2_0,
         });
         bounds_group.addLayer(layer_SUBDIVISIONESAO20232024_2);
@@ -362,7 +392,8 @@
             layer_SUBDIVISIONESAO20232024_2.eachLayer(function(layer) {
                 if (layer.feature.properties['ROL'] && layer.feature.properties['ROL'].toString().toLowerCase() === rolInput.toLowerCase()) {
                     map.fitBounds(layer.getBounds());
-                    layer.openPopup();
+                    // Llamar a pop_SUBDIVISIONESAO20232024_2 para mostrar la info en la barra lateral
+                    pop_SUBDIVISIONESAO20232024_2(layer.feature, layer);
                     found = true;
                     return;
                 }
@@ -385,6 +416,7 @@
             
             rolSearchMessageDiv.innerHTML = "";
             coordSearchMessageDiv.innerHTML = "";
+            document.getElementById('property-info').innerHTML = ''; // Limpia el panel lateral
 
             if (coords.length !== 2 || isNaN(coords[0]) || isNaN(coords[1]) || coords[0] < -90 || coords[0] > 90 || coords[1] < -180 || coords[1] > 180) {
                 coordSearchMessageDiv.innerHTML = "Formato no válido. Ingrese Latitud y Longitud separadas por un espacio.";
@@ -403,16 +435,8 @@
                 .openPopup();
         }
         
-        // Evento para eliminar el marcador al hacer clic en el mapa
-        map.on('click', function() {
-            if (searchMarker) {
-                map.removeLayer(searchMarker);
-                searchMarker = null;
-            }
-        });
-        
-        // Función para manejar el acordeón
-        map.on('popupopen', function() {
+        // Función para inicializar los acordeones
+        function initializeAccordion() {
             var acc = document.getElementsByClassName("accordion-button");
             for (var i = 0; i < acc.length; i++) {
                 acc[i].addEventListener("click", function() {
@@ -425,7 +449,16 @@
                     } 
                 });
             }
-        });
+        }
+
+        // Modifica la función onEachFeature para que no se abra un pop-up por defecto
+        layer_SUBDIVISIONESAO20232024_2.onEachFeature = function (feature, layer) {
+            layer.on('click', function(e) {
+                pop_SUBDIVISIONESAO20232024_2(feature, layer);
+                // Si quieres que el mapa se centre al hacer clic, puedes usar esta línea:
+                // map.fitBounds(e.target.getBounds());
+            });
+        };
 
         setBounds();
     </script>

@@ -350,6 +350,8 @@
         map.getPane('pane_SUBDIVISIONESAO20232024_2').style.zIndex = 402;
         map.getPane('pane_SUBDIVISIONESAO20232024_2').style['mix-blend-mode'] = 'normal';
         
+        var highlightedLayer = null;
+
         var layer_SUBDIVISIONESAO20232024_2 = new L.geoJson(json_SUBDIVISIONESAO20232024_2, {
             attribution: '',
             interactive: true,
@@ -364,28 +366,41 @@
                         className: 'white-tooltip'
                     });
                 }
-                layer.on('mouseover', function(e) {
-                    if (e.target !== highlightedLayer) {
-                        e.target.setStyle(hoverStyle);
+                
+                layer.on({
+                    click: function (e) {
+                        // Resetea el estilo del polígono previamente seleccionado
+                        if (highlightedLayer) {
+                            layer_SUBDIVISIONESAO20232024_2.resetStyle(highlightedLayer);
+                        }
+                        
+                        // Resalta el nuevo polígono seleccionado
+                        e.target.setStyle(highlightStyle);
+                        highlightedLayer = e.target;
+                        
+                        // Muestra la información en la barra lateral
+                        pop_SUBDIVISIONESAO20232024_2(e.target.feature, e.target);
+                        
+                        // Centra el mapa en el polígono seleccionado
+                        map.fitBounds(e.target.getBounds());
+                        
+                        // Evita que el evento se propague al mapa
+                        L.DomEvent.stopPropagation(e);
+                    },
+                    mouseover: function (e) {
+                        // Cambia el estilo al pasar el mouse si no está seleccionado
+                        if (e.target !== highlightedLayer) {
+                            e.target.setStyle(hoverStyle);
+                        }
+                        e.target.openTooltip();
+                    },
+                    mouseout: function (e) {
+                        // Restaura el estilo al quitar el mouse si no está seleccionado
+                        if (e.target !== highlightedLayer) {
+                            layer_SUBDIVISIONESAO20232024_2.resetStyle(e.target);
+                        }
+                        e.target.closeTooltip();
                     }
-                    e.target.openTooltip();
-                });
-                layer.on('mouseout', function(e) {
-                    if (e.target !== highlightedLayer) {
-                        layer_SUBDIVISIONESAO20232024_2.resetStyle(e.target);
-                    }
-                    e.target.closeTooltip();
-                });
-                layer.on('click', function(e) {
-                    if (highlightedLayer) {
-                        layer_SUBDIVISIONESAO20232024_2.resetStyle(highlightedLayer);
-                    }
-                    
-                    highlightedLayer = e.target;
-                    highlightedLayer.setStyle(highlightStyle);
-
-                    pop_SUBDIVISIONESAO20232024_2(e.target.feature, e.target);
-                    map.fitBounds(e.target.getBounds());
                 });
             },
             style: style_SUBDIVISIONESAO20232024_2_0,
@@ -414,14 +429,22 @@
         lay.addTo(map);
 
         var coordinatesDiv = document.getElementById('coordinates');
-        var highlightedLayer = null;
-
+        
         map.on('mousemove', function(e) {
             var lat = e.latlng.lat.toFixed(6);
             var lng = e.latlng.lng.toFixed(6);
             coordinatesDiv.innerHTML = `Latitud: ${lat}<br>Longitud: ${lng}`;
         });
         
+        // Maneja el clic en el mapa para deseleccionar el polígono y limpiar la barra lateral
+        map.on('click', function() {
+            if (highlightedLayer) {
+                layer_SUBDIVISIONESAO20232024_2.resetStyle(highlightedLayer);
+                highlightedLayer = null;
+                document.getElementById('property-info').innerHTML = '';
+            }
+        });
+
         var rolSearchMessageDiv = document.getElementById('rol-search-message');
         var coordSearchMessageDiv = document.getElementById('coord-search-message');
         
@@ -500,14 +523,6 @@
             var newCenter = L.latLng(latInput, lonInput);
             map.setView(newCenter, 16);
         }
-        
-        map.on('click', function() {
-            if (highlightedLayer) {
-                layer_SUBDIVISIONESAO20232024_2.resetStyle(highlightedLayer);
-                highlightedLayer = null;
-                document.getElementById('property-info').innerHTML = '';
-            }
-        });
         
         function initializeAccordion() {
             var acc = document.getElementsByClassName("accordion-button");

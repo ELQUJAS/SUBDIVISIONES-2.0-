@@ -271,13 +271,12 @@
                     <button class="accordion-button">PELIGRO VOLCÁNICO</button>\
                     <div class="accordion-content">\
                         <p>' + (feature.properties['PELIGRO VO'] !== null ? autolinker.link(String(feature.properties['PELIGRO VO']).replace(/'/g, '\'').toLocaleString()) : 'N/A') + '</p>\
-                    </div>\
-                </div>\
+                    </div>
+                </div>
             </div>';
 
             var propertyInfoDiv = document.getElementById('property-info');
             propertyInfoDiv.innerHTML = popupContent;
-
             initializeAccordion();
         }
 
@@ -307,15 +306,19 @@
             layerName: 'layer_SUBDIVISIONESAO20232024_2',
             pane: 'pane_SUBDIVISIONESAO20232024_2',
             onEachFeature: function (feature, layer) {
-                // Muestra el ROL en una etiqueta al pasar el cursor
                 if (feature.properties['ROL']) {
-                    layer.bindTooltip("ROL: " + feature.properties['ROL'], { permanent: false, direction: 'center', className: 'rol-tooltip' });
+                    layer.bindTooltip("ROL: " + feature.properties['ROL'], { permanent: false, direction: 'center' });
                 }
-
-                // Al hacer clic, se llama a la función para llenar el panel lateral
                 layer.on('click', function(e) {
                     pop_SUBDIVISIONESAO20232024_2(feature, layer);
-                    map.fitBounds(e.target.getBounds()); // Centra el mapa en el polígono
+                    map.fitBounds(e.target.getBounds());
+                    
+                    if (searchMarker) {
+                        map.removeLayer(searchMarker);
+                    }
+                    
+                    var center = e.target.getBounds().getCenter();
+                    searchMarker = L.marker(center).addTo(map);
                 });
             },
             style: style_SUBDIVISIONESAO20232024_2_0,
@@ -354,6 +357,15 @@
         var rolSearchMessageDiv = document.getElementById('rol-search-message');
         var coordSearchMessageDiv = document.getElementById('coord-search-message');
         var searchMarker;
+        
+        // Icono personalizado para el marcador
+        var rolIcon = L.icon({
+            iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png',
+            iconSize: [25, 41],
+            iconAnchor: [12, 41],
+            popupAnchor: [1, -34],
+            shadowSize: [41, 41]
+        });
 
         function populateDatalist() {
             var datalist = document.getElementById('rols-list');
@@ -390,6 +402,11 @@
                 if (layer.feature.properties['ROL'] && layer.feature.properties['ROL'].toString().toLowerCase() === rolInput.toLowerCase()) {
                     map.fitBounds(layer.getBounds());
                     pop_SUBDIVISIONESAO20232024_2(layer.feature, layer);
+                    
+                    var center = layer.getBounds().getCenter();
+                    searchMarker = L.marker(center, {icon: rolIcon}).addTo(map);
+                    searchMarker.bindPopup("ROL: " + rolInput).openPopup();
+                    
                     found = true;
                     return;
                 }

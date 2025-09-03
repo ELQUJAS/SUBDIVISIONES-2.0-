@@ -12,158 +12,375 @@
     <link rel="stylesheet" href="css/fontawesome-all.min.css">
     <link rel="stylesheet" href="css/leaflet.photon.css">
     <style>
+        /* Base Styles */
         html, body {
             width: 100%;
             height: 100%;
             padding: 0;
             margin: 0;
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            color: #333;
+            overflow: hidden;
+            background-color: #f0f2f5; /* Fondo general del body, más claro */
         }
-        #container {
+
+        /* Header Styles - Similar to image */
+        #header {
+            background-color: #007bff; /* Azul vibrante */
+            color: white;
+            padding: 15px 30px;
             display: flex;
-            width: 100%;
-            height: 100%;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            position: relative;
+            z-index: 1001; /* Asegura que esté por encima de todo */
+            border-bottom-left-radius: 15px; /* Redondeado en la esquina inferior izquierda */
+            border-bottom-right-radius: 15px; /* Redondeado en la esquina inferior derecha */
         }
+        #header h1 {
+            margin: 0;
+            font-size: 24px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+        #header-icons {
+            display: flex;
+            align-items: center;
+        }
+        #header-icons .icon-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-left: 25px;
+            color: rgba(255, 255, 255, 0.85);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        #header-icons .icon-item:hover {
+            color: white;
+        }
+        #header-icons .icon-item i {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+        #header-icons .icon-item span {
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        /* Main Container for Map and Sidebar */
+        #main-content-container {
+            display: flex;
+            width: calc(100% - 40px); /* Ajuste para el padding del body si lo hubiera */
+            height: calc(100vh - 100px); /* Ajusta para el header y el margen inferior */
+            margin: 20px auto; /* Centrar y dar margen */
+            border-radius: 15px; /* Bordes redondeados en el contenedor principal */
+            overflow: hidden; /* Importante para que los bordes redondeados funcionen bien */
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15); /* Sombra más pronunciada */
+            background-color: #fff; /* Fondo blanco para el contenedor */
+        }
+
+        /* Map Styles */
         #map {
             flex-grow: 1;
             height: 100%;
+            min-width: 500px; /* Asegura un tamaño mínimo para el mapa */
+            background-color: #e6e9ed; /* Fondo sutil para el área del mapa */
         }
+
+        /* Coordinates Display */
         #coordinates {
             position: absolute;
-            bottom: 10px;
-            left: 10px;
+            bottom: 15px;
+            left: 15px;
             z-index: 1000;
-            background: rgba(255, 255, 255, 0.8);
-            padding: 5px 10px;
-            border-radius: 5px;
-            font-size: 14px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 13px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            color: #555;
         }
+        
+        /* Sidebar Styles */
         #sidebar {
-            width: 350px;
-            background: #fff;
-            padding: 15px;
-            box-shadow: -2px 0 5px rgba(0,0,0,0.1);
+            width: 380px;
+            background: #ffffff; /* Fondo blanco para el sidebar */
+            padding: 25px; /* Más padding */
             overflow-y: auto;
             z-index: 900;
-            height: 100vh;
             box-sizing: border-box;
+            border-left: 1px solid #e0e0e0; /* Borde sutil a la izquierda */
+            border-top-right-radius: 15px; /* Bordes redondeados arriba y abajo a la derecha */
+            border-bottom-right-radius: 15px;
         }
+
+        /* Search Box Styles */
         .search-box {
-            background: #f9f9f9;
-            padding: 10px;
-            border-radius: 5px;
-            margin-bottom: 15px;
-            border: 1px solid #ddd;
+            background: #f9fbfd; /* Fondo muy claro para los cuadros de búsqueda */
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            border: 1px solid #e8edf2; /* Borde muy sutil */
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.05); /* Sombra interna sutil */
         }
         .search-box h4 {
             margin-top: 0;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
+            font-size: 18px;
+            color: #2c3e50; /* Color de título oscuro */
+            font-weight: 700;
+            border-bottom: 2px solid #007bff; /* Subrayado azul */
+            padding-bottom: 8px;
+            display: inline-block; /* Para que el subrayado se ajuste al texto */
+        }
+        .search-box label {
+            display: block;
+            font-size: 13px;
+            color: #6a7a8d; /* Texto de label más sutil */
+            margin-bottom: 5px;
+            font-weight: 500;
         }
         .search-box input {
             width: 100%;
-            padding: 8px;
-            margin-bottom: 5px;
+            padding: 12px 15px;
+            margin-bottom: 10px;
             box-sizing: border-box;
-            border: 1px solid #ccc;
-            border-radius: 3px;
+            border: 1px solid #dcdfe6; /* Borde más sutil */
+            border-radius: 8px; /* Bordes más redondeados */
+            font-size: 14px;
+            color: #495057;
+            background-color: #ffffff;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .search-box input:focus {
+            border-color: #007bff; /* Azul al enfocar */
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25); /* Resaltado de foco */
+            outline: none;
         }
         .search-box button {
             width: 100%;
-            padding: 8px;
+            padding: 12px 15px;
             border: none;
-            background-color: #0078A8;
             color: white;
-            border-radius: 3px;
+            border-radius: 8px; /* Bordes más redondeados */
             cursor: pointer;
+            font-size: 15px;
+            font-weight: 600;
+            transition: background-color 0.2s, transform 0.1s;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1); /* Sombra para botones */
         }
         .search-box button:hover {
-            background-color: #005f85;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+        }
+        .search-box button:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        /* Específico para botones de búsqueda */
+        .search-box button:first-of-type { /* Botón de Coordenadas */
+            background-color: #007bff; /* Azul */
+        }
+        .search-box button:first-of-type:hover {
+            background-color: #0069d9;
+        }
+        .search-box button:last-of-type { /* Botón de ROL */
+            background-color: #28a745; /* Verde */
+        }
+        .search-box button:last-of-type:hover {
+            background-color: #218838;
         }
         .search-message {
-            margin-top: 5px;
-            font-size: 12px;
-            color: #d9534f;
+            margin-top: 10px;
+            font-size: 13px;
+            color: #dc3545; /* Rojo de error */
+            font-weight: 500;
         }
+
+        /* Property Info and Accordion Styles */
         #property-info {
-            padding-top: 10px;
+            padding-top: 15px;
+            border-top: 1px solid #f0f2f5; /* Separador más sutil */
+        }
+        #property-info h4 {
+            font-size: 18px;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #007bff; /* Subrayado azul */
+            display: inline-block;
+            font-weight: 700;
         }
         .accordion-item {
-            border: none;
-            border-bottom: 1px solid #ccc;
+            border: 1px solid #e0e0e0; /* Borde general del item */
+            border-radius: 8px;
+            margin-bottom: 10px;
+            overflow: hidden;
+            background-color: #ffffff;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
         }
         .accordion-button {
-            background-color: #f1f1f1;
-            color: #444;
+            background-color: #fcfcfc; /* Fondo muy claro para el botón */
+            color: #333;
             cursor: pointer;
-            padding: 10px 15px;
+            padding: 12px 18px;
             width: 100%;
             text-align: left;
             border: none;
             outline: none;
-            transition: 0.4s;
-            font-size: 14px;
+            transition: background-color 0.3s, color 0.3s;
+            font-size: 15px;
+            font-weight: 500;
+            display: flex; /* Para alinear el chevron a la derecha */
+            justify-content: space-between;
+            align-items: center;
         }
         .accordion-button:hover {
-            background-color: #ddd;
+            background-color: #f0f0f0;
+        }
+        .accordion-button.active {
+            background-color: #e0f2f7; /* Fondo azul claro cuando está activo */
+            color: #0056b3; /* Texto azul oscuro */
+            border-bottom: 1px solid #b3e0ed; /* Borde inferior al abrir */
+            border-radius: 8px 8px 0 0; /* Solo esquinas superiores redondeadas cuando activo */
         }
         .accordion-content {
-            padding: 0 15px;
+            padding: 10px 18px; /* Ajuste de padding */
             max-height: 0;
             overflow: hidden;
-            transition: max-height 0.2s ease-out;
-            background-color: white;
+            transition: max-height 0.3s ease-out, padding 0.3s ease-out; /* Transición para padding */
+            background-color: #fefefe; /* Fondo más blanco para el contenido */
+            border-top: 1px solid #f0f0f0; /* Separador sutil */
+        }
+        .accordion-content.open { /* Clase para cuando el contenido está abierto */
+             max-height: 500px; /* Un valor grande para mostrar todo el contenido */
+             padding: 10px 18px;
         }
         .accordion-content p {
-            margin: 10px 0;
+            margin: 8px 0; /* Espaciado entre párrafos */
+            font-size: 14px;
+            color: #555;
+            line-height: 1.5;
         }
-        .accordion-button::before {
-            content: '▶';
-            font-size: 12px;
-            color: #777;
-            margin-right: 8px;
-            transition: transform 0.2s;
-            display: inline-block;
+        .accordion-content p b {
+            color: #333;
+            font-weight: 600;
         }
-        .accordion-button.active::before {
-            transform: rotate(90deg);
+        /* Chevron (flecha) icon for accordion */
+        .accordion-button::after {
+            content: '>'; /* Usamos el carácter > para la flecha */
+            font-family: 'Font Awesome 5 Free'; /* Asegúrate de que Font Awesome esté cargado */
+            font-weight: 900; /* Para el ícono sólido */
+            font-size: 14px;
+            color: #888;
+            margin-left: 10px;
+            transition: transform 0.2s ease-in-out;
+            transform: rotate(90deg); /* Inicio hacia la derecha */
+        }
+        .accordion-button.active::after {
+            transform: rotate(270deg); /* Gira hacia abajo cuando está activo */
         }
 
-        /* Estilo para el tooltip blanco del ROL */
+        /* Tooltip Styles (for ROL on map) */
         .white-tooltip {
             color: white;
             font-weight: bold;
-            background-color: rgba(0, 0, 0, 0.6);
-            border: 1px solid white;
+            background-color: rgba(0, 0, 0, 0.75); /* Fondo más oscuro */
+            border: 1px solid #fff; /* Borde blanco */
+            border-radius: 5px; /* Bordes redondeados */
+            padding: 5px 8px;
+            font-size: 13px;
         }
-        /* Estilo para la flecha del tooltip */
         .leaflet-tooltip-bottom:before, .leaflet-tooltip-top:before, .leaflet-tooltip-left:before, .leaflet-tooltip-right:before {
-            border-top-color: rgba(0, 0, 0, 0.6) !important;
+            border-top-color: rgba(0, 0, 0, 0.75) !important;
+        }
+
+        /* Leaflet Controls Customization */
+        .leaflet-control-zoom {
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            margin-left: 15px; /* Ajuste de posición */
+            margin-top: 15px;
+        }
+        .leaflet-control-zoom a {
+            color: #555;
+            background-color: #fff;
+            border-bottom: 1px solid #eee;
+        }
+        .leaflet-control-zoom a:hover {
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        .leaflet-control-zoom a.leaflet-control-zoom-out {
+            border-radius: 0 0 8px 8px;
+        }
+        .leaflet-control-zoom a.leaflet-control-zoom-in {
+            border-radius: 8px 8px 0 0;
+        }
+        .leaflet-control-layers {
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            background-color: #fff;
+            color: #333;
+        }
+        .leaflet-control-layers-toggle {
+            background-color: #fff;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="%23333"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/></svg>'); /* Icono de info */
+            background-size: 20px 20px;
+            background-position: center;
+            background-repeat: no-repeat;
+            width: 36px;
+            height: 36px;
+            border-radius: 8px; /* Para que el toggle también tenga bordes redondeados */
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        }
+        /* Ajuste específico para el tree control, si usas íconos de Font Awesome en él */
+        .leaflet-control-layers-tree label i {
+            margin-right: 5px;
+            color: #555;
         }
     </style>
     <title>Visor de Coordenadas y Roles</title>
 </head>
 <body>
-    <div id="container">
+    <div id="header">
+        <h1>INFORMACIÓN TERRITORIAL DE LA COMUNA DE VILLARRICA</h1>
+        <div id="header-icons">
+            <a href="#" class="icon-item">
+                <i class="fas fa-home"></i>
+                <span>Inicio</span>
+            </a>
+            <a href="#" class="icon-item">
+                <i class="fas fa-search"></i>
+                <span>Buscar Rol</span>
+            </a>
+        </div>
+    </div>
+
+    <div id="main-content-container">
         <div id="map"></div>
         <div id="coordinates">Mueva el mouse sobre el mapa para ver las coordenadas.</div>
         
         <div id="sidebar">
             <div class="search-box">
-                <h4>Búsqueda por ROL</h4>
-                <input type="text" id="rol-input" placeholder="Buscar por ROL" list="rols-list">
-                <datalist id="rols-list"></datalist>
-                <button onclick="searchRol()">Buscar</button>
-                <div id="rol-search-message" class="search-message"></div>
-            </div>
-            <div class="search-box">
-                <h4>Búsqueda por Coordenadas</h4>
-                <input type="text" id="coord-input" placeholder="Ej: -39.16 -72.25">
+                <h4>Buscadores</h4>
+                <label for="coord-input">Latitud, Longitud (Ej: -33.21 -71.24)</label>
+                <input type="text" id="coord-input" placeholder="Latitud, Longitud">
                 <button onclick="searchCoordinates()">Buscar</button>
                 <div id="coord-search-message" class="search-message"></div>
+                
+                <label for="rol-input" style="margin-top: 20px;">Buscar ROL (Ej: 1234-5)</label>
+                <input type="text" id="rol-input" placeholder="Buscar ROL" list="rols-list">
+                <datalist id="rols-list"></datalist>
+                <button onclick="searchRol()">Buscar ROL</button>
+                <div id="rol-search-message" class="search-message"></div>
             </div>
             
             <div id="property-info">
-            </div>
+                <h4>Información de ROL</h4>
+                </div>
         </div>
     </div>
 
@@ -414,7 +631,7 @@
             if (highlightedLayer) {
                 layer_SUBDIVISIONESAO20232024_2.resetStyle(highlightedLayer);
                 highlightedLayer = null;
-                document.getElementById('property-info').innerHTML = '';
+                document.getElementById('property-info').innerHTML = '<h4>Información de ROL</h4>'; // Restablece el div de info
             }
             if (coordMarker) {
                 map.removeLayer(coordMarker);
@@ -495,7 +712,7 @@
             
             rolSearchMessageDiv.innerHTML = "";
             coordSearchMessageDiv.innerHTML = "";
-            document.getElementById('property-info').innerHTML = '';
+            document.getElementById('property-info').innerHTML = '<h4>Información de ROL</h4>'; // Restablece el div de info
 
             if (coords.length !== 2 || isNaN(coords[0]) || isNaN(coords[1])) {
                 coordSearchMessageDiv.innerHTML = "Formato no válido. Ingrese Latitud y Longitud separadas por un espacio.";
@@ -554,15 +771,21 @@
         function initializeAccordion() {
             var acc = document.getElementsByClassName("accordion-button");
             for (var i = 0; i < acc.length; i++) {
-                acc[i].addEventListener("click", function() {
-                    this.classList.toggle("active");
-                    var content = this.nextElementSibling;
-                    if (content.style.maxHeight) {
-                        content.style.maxHeight = null;
-                    } else {
-                        content.style.maxHeight = content.scrollHeight + "px";
-                    } 
-                });
+                // Ensure event listeners are not duplicated
+                if (!acc[i].classList.contains('has-listener')) {
+                    acc[i].addEventListener("click", function() {
+                        this.classList.toggle("active");
+                        var content = this.nextElementSibling;
+                        if (content.style.maxHeight) {
+                            content.style.maxHeight = null;
+                            content.classList.remove('open');
+                        } else {
+                            content.style.maxHeight = content.scrollHeight + "px";
+                            content.classList.add('open');
+                        } 
+                    });
+                    acc[i].classList.add('has-listener');
+                }
             }
         }
 

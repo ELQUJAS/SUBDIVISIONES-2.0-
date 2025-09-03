@@ -217,7 +217,6 @@
         });
         map.addLayer(layer_GoogleSatellite_1);
 
-        // Modificación: La función pop_SUBDIVISIONESAO20232024_2 ahora carga la info en la barra lateral
         function pop_SUBDIVISIONESAO20232024_2(feature, layer) {
             var popupContent = '<div>\
                 <h4>ROL: ' + (feature.properties['ROL'] !== null ? String(feature.properties['ROL']) : '') + '</h4>\
@@ -314,7 +313,6 @@
             interactive: true,
         };
 
-        // Style for when a polygon is clicked and highlighted
         var highlightStyle = {
             pane: 'pane_SUBDIVISIONESAO20232024_2',
             opacity: 1,
@@ -329,18 +327,17 @@
             interactive: true,
         };
 
-        // Style for when a polygon is hovered over
         var hoverStyle = {
             pane: 'pane_SUBDIVISIONESAO20232024_2',
             opacity: 1,
-            color: 'rgba(255,255,255,1.0)', // White border on hover
+            color: 'rgba(255,255,255,1.0)',
             dashArray: '',
             lineCap: 'butt',
             lineJoin: 'miter',
             weight: 2.0,
             fill: true,
             fillOpacity: 0.2,
-            fillColor: 'rgba(255,255,255,0.5)', // Light white fill on hover
+            fillColor: 'rgba(255,255,255,0.5)',
             interactive: true,
         };
 
@@ -367,31 +364,32 @@
                     });
                 }
                 layer.on('mouseover', function(e) {
-                    e.target.setStyle(hoverStyle);
+                    // Solo aplica el estilo de hover si el polígono no está seleccionado
+                    if (e.target !== highlightedLayer) {
+                        e.target.setStyle(hoverStyle);
+                    }
                     e.target.openTooltip();
                 });
                 layer.on('mouseout', function(e) {
-                    // Solo restablece el estilo si no es el polígono actualmente seleccionado
-                    if (highlightedLayer && e.target !== highlightedLayer) {
-                         layer_SUBDIVISIONESAO20232024_2.resetStyle(e.target);
-                    } else if (!highlightedLayer) {
+                    // Restablece el estilo solo si el polígono no es el seleccionado actualmente
+                    if (e.target !== highlightedLayer) {
                         layer_SUBDIVISIONESAO20232024_2.resetStyle(e.target);
                     }
                     e.target.closeTooltip();
                 });
                 layer.on('click', function(e) {
-                    // Llama a la función que ahora carga la información en la barra lateral
-                    pop_SUBDIVISIONESAO20232024_2(feature, layer);
-                    map.fitBounds(e.target.getBounds());
-                    
-                    // Restablece el estilo del polígono previamente seleccionado
+                    // Remueve el resaltado del polígono anterior
                     if (highlightedLayer) {
                         layer_SUBDIVISIONESAO20232024_2.resetStyle(highlightedLayer);
                     }
                     
-                    // Guarda y aplica el estilo de resaltado al nuevo polígono seleccionado
-                    highlightedLayer = layer;
-                    layer.setStyle(highlightStyle);
+                    // Almacena y resalta el polígono actual
+                    highlightedLayer = e.target;
+                    highlightedLayer.setStyle(highlightStyle);
+
+                    // Carga la información en la barra lateral
+                    pop_SUBDIVISIONESAO20232024_2(e.target.feature, e.target);
+                    map.fitBounds(e.target.getBounds());
                 });
             },
             style: style_SUBDIVISIONESAO20232024_2_0,

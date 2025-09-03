@@ -17,10 +17,10 @@
             height: 100%;
             padding: 0;
             margin: 0;
-            display: flex; /* Utiliza flexbox para alinear el mapa y la barra lateral */
+            display: flex;
         }
         #map {
-            flex-grow: 1; /* El mapa ocupará todo el espacio restante */
+            flex-grow: 1;
         }
         #coordinates {
             position: absolute;
@@ -33,17 +33,14 @@
             font-family: Arial, sans-serif;
             font-size: 14px;
         }
-
-        /* Estilos para la barra lateral */
         #sidebar {
-            width: 350px; /* Ancho de la barra lateral */
+            width: 350px;
             background: #fff;
             padding: 15px;
             box-shadow: -2px 0 5px rgba(0,0,0,0.1);
-            overflow-y: auto; /* Permite el scroll si el contenido es largo */
+            overflow-y: auto;
             font-family: Arial, sans-serif;
         }
-
         .search-box {
             background: #f9f9f9;
             padding: 10px;
@@ -76,12 +73,9 @@
             font-size: 12px;
             color: #d9534f;
         }
-
         #property-info {
             padding-top: 10px;
         }
-        
-        /* Estilos para el acordeón del popup */
         .accordion-item {
             border: none;
             border-bottom: 1px solid #ccc;
@@ -205,7 +199,6 @@
         map.addLayer(layer_GoogleSatellite_1);
 
         function pop_SUBDIVISIONESAO20232024_2(feature, layer) {
-            // El contenido del pop-up se genera y se inyecta en el panel lateral
             var popupContent = '<div>\
                 <h4>ROL: ' + (feature.properties['ROL'] !== null ? String(feature.properties['ROL']) : '') + '</h4>\
                 <div class="accordion-item">\
@@ -285,7 +278,6 @@
             var propertyInfoDiv = document.getElementById('property-info');
             propertyInfoDiv.innerHTML = popupContent;
 
-            // Al abrir el "pop-up" lateral, inicializa los acordeones
             initializeAccordion();
         }
 
@@ -315,9 +307,15 @@
             layerName: 'layer_SUBDIVISIONESAO20232024_2',
             pane: 'pane_SUBDIVISIONESAO20232024_2',
             onEachFeature: function (feature, layer) {
-                // Al hacer clic en un polígono, se llama a la función para llenar el panel lateral
+                // Muestra el ROL en una etiqueta al pasar el cursor
+                if (feature.properties['ROL']) {
+                    layer.bindTooltip("ROL: " + feature.properties['ROL'], { permanent: false, direction: 'center', className: 'rol-tooltip' });
+                }
+
+                // Al hacer clic, se llama a la función para llenar el panel lateral
                 layer.on('click', function(e) {
                     pop_SUBDIVISIONESAO20232024_2(feature, layer);
+                    map.fitBounds(e.target.getBounds()); // Centra el mapa en el polígono
                 });
             },
             style: style_SUBDIVISIONESAO20232024_2_0,
@@ -357,7 +355,6 @@
         var coordSearchMessageDiv = document.getElementById('coord-search-message');
         var searchMarker;
 
-        // Función para poblar el datalist con los roles
         function populateDatalist() {
             var datalist = document.getElementById('rols-list');
             var roles = new Set();
@@ -392,7 +389,6 @@
             layer_SUBDIVISIONESAO20232024_2.eachLayer(function(layer) {
                 if (layer.feature.properties['ROL'] && layer.feature.properties['ROL'].toString().toLowerCase() === rolInput.toLowerCase()) {
                     map.fitBounds(layer.getBounds());
-                    // Llamar a pop_SUBDIVISIONESAO20232024_2 para mostrar la info en la barra lateral
                     pop_SUBDIVISIONESAO20232024_2(layer.feature, layer);
                     found = true;
                     return;
@@ -416,7 +412,7 @@
             
             rolSearchMessageDiv.innerHTML = "";
             coordSearchMessageDiv.innerHTML = "";
-            document.getElementById('property-info').innerHTML = ''; // Limpia el panel lateral
+            document.getElementById('property-info').innerHTML = '';
 
             if (coords.length !== 2 || isNaN(coords[0]) || isNaN(coords[1]) || coords[0] < -90 || coords[0] > 90 || coords[1] < -180 || coords[1] > 180) {
                 coordSearchMessageDiv.innerHTML = "Formato no válido. Ingrese Latitud y Longitud separadas por un espacio.";
@@ -435,7 +431,13 @@
                 .openPopup();
         }
         
-        // Función para inicializar los acordeones
+        map.on('click', function() {
+            if (searchMarker) {
+                map.removeLayer(searchMarker);
+                searchMarker = null;
+            }
+        });
+        
         function initializeAccordion() {
             var acc = document.getElementsByClassName("accordion-button");
             for (var i = 0; i < acc.length; i++) {
@@ -450,15 +452,6 @@
                 });
             }
         }
-
-        // Modifica la función onEachFeature para que no se abra un pop-up por defecto
-        layer_SUBDIVISIONESAO20232024_2.onEachFeature = function (feature, layer) {
-            layer.on('click', function(e) {
-                pop_SUBDIVISIONESAO20232024_2(feature, layer);
-                // Si quieres que el mapa se centre al hacer clic, puedes usar esta línea:
-                // map.fitBounds(e.target.getBounds());
-            });
-        };
 
         setBounds();
     </script>

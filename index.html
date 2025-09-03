@@ -17,6 +17,7 @@
             height: 100%;
             padding: 0;
             margin: 0;
+            font-family: Arial, sans-serif;
         }
         #container {
             display: flex;
@@ -35,7 +36,6 @@
             background: rgba(255, 255, 255, 0.8);
             padding: 5px 10px;
             border-radius: 5px;
-            font-family: Arial, sans-serif;
             font-size: 14px;
         }
         #sidebar {
@@ -44,8 +44,9 @@
             padding: 15px;
             box-shadow: -2px 0 5px rgba(0,0,0,0.1);
             overflow-y: auto;
-            font-family: Arial, sans-serif;
             z-index: 900;
+            height: 100vh; /* Asegura que la barra lateral tenga la altura completa */
+            box-sizing: border-box;
         }
         .search-box {
             background: #f9f9f9;
@@ -96,7 +97,6 @@
             border: none;
             outline: none;
             transition: 0.4s;
-            font-family: Arial, sans-serif;
             font-size: 14px;
         }
         .accordion-button:hover {
@@ -229,56 +229,56 @@
                     <button class="accordion-button">CONSTRUCCIONES</button>\
                     <div class="accordion-content">\
                         <p>' + (feature.properties['CONSTRUCCI'] !== null ? autolinker.link(String(feature.properties['CONSTRUCCI']).replace(/'/g, '\'').toLocaleString()) : 'N/A') + '</p>\
-                    </div>
-                </div>
+                    </div>\
+                </div>\
                 <div class="accordion-item">\
                     <button class="accordion-button">APROBACIÓN</button>\
                     <div class="accordion-content">\
                         <p>' + (feature.properties['APROBACION'] !== null ? autolinker.link(String(feature.properties['APROBACION']).replace(/'/g, '\'').toLocaleString()) : 'N/A') + '</p>\
-                    </div>
-                </div>
+                    </div>\
+                </div>\
                 <div class="accordion-item">\
                     <button class="accordion-button">FECHA</button>\
                     <div class="accordion-content">\
                         <p>' + (feature.properties['FECHA'] !== null ? autolinker.link(String(feature.properties['FECHA']).replace(/'/g, '\'').toLocaleString()) : 'N/A') + '</p>\
-                    </div>
-                </div>
+                    </div>\
+                </div>\
                 <div class="accordion-item">\
                     <button class="accordion-button">UBICACIÓN</button>\
                     <div class="accordion-content">\
                         <p>' + (feature.properties['UBICACIÓN'] !== null ? autolinker.link(String(feature.properties['UBICACIÓN']).replace(/'/g, '\'').toLocaleString()) : 'N/A') + '</p>\
-                    </div>
-                </div>
+                    </div>\
+                </div>\
                 <div class="accordion-item">\
                     <button class="accordion-button">PROPIETARIO</button>\
                     <div class="accordion-content">\
                         <p>' + (feature.properties['PROPIETARI'] !== null ? autolinker.link(String(feature.properties['PROPIETARI']).replace(/'/g, '\'').toLocaleString()) : 'N/A') + '</p>\
-                    </div>
-                </div>
+                    </div>\
+                </div>\
                 <div class="accordion-item">\
                     <button class="accordion-button">SUPERFICIE</button>\
                     <div class="accordion-content">\
                         <p>' + (feature.properties['SUPERFICIE'] !== null ? autolinker.link(String(feature.properties['SUPERFICIE']).replace(/'/g, '\'').toLocaleString()) : 'N/A') + '</p>\
-                    </div>
-                </div>
+                    </div>\
+                </div>\
                 <div class="accordion-item">\
                     <button class="accordion-button">DESTINO</button>\
                     <div class="accordion-content">\
                         <p>' + (feature.properties['DESTINO '] !== null ? autolinker.link(String(feature.properties['DESTINO ']).replace(/'/g, '\'').toLocaleString()) : 'N/A') + '</p>\
-                    </div>
-                </div>
+                    </div>\
+                </div>\
                 <div class="accordion-item">\
                     <button class="accordion-button">RECEPCIÓN</button>\
                     <div class="accordion-content">\
                         <p>' + (feature.properties['RECEPCIÓN'] !== null ? autolinker.link(String(feature.properties['RECEPCIÓN']).replace(/'/g, '\'').toLocaleString()) : 'N/A') + '</p>\
-                    </div>
-                </div>
+                    </div>\
+                </div>\
                 <div class="accordion-item">\
                     <button class="accordion-button">PELIGRO VOLCÁNICO</button>\
                     <div class="accordion-content">\
                         <p>' + (feature.properties['PELIGRO VO'] !== null ? autolinker.link(String(feature.properties['PELIGRO VO']).replace(/'/g, '\'').toLocaleString()) : 'N/A') + '</p>\
-                    </div>
-                </div>
+                    </div>\
+                </div>\
             </div>';
 
             var propertyInfoDiv = document.getElementById('property-info');

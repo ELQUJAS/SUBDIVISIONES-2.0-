@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="css/qgis2web.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="css/leaflet.photon.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
     <title>Visor de Coordenadas y Roles</title>
     <style>
         /* Base Styles */
@@ -20,15 +20,15 @@
             height: 100%;
             padding: 0;
             margin: 0;
-            font-family: 'Poppins', sans-serif;
+            font-family: 'Lato', sans-serif; /* Cambiado a Lato */
             color: #333;
             overflow: hidden;
             background: linear-gradient(135deg, #e0f2f7 0%, #c8e6c9 100%);
         }
 
-        /* Header Styles - Mantiene el estilo original solicitado */
+        /* Header Styles */
         #header {
-            background-color: #007bff;
+            background-color: #1C2860; /* Color Pantone 280 C */
             color: white;
             padding: 15px 30px;
             display: flex;
@@ -71,7 +71,7 @@
             font-weight: 500;
         }
 
-        /* Main Container for Map and Sidebar - Estilo de la imagen */
+        /* Main Container for Map and Sidebar */
         #main-content-container {
             display: flex;
             width: calc(100% - 60px); 
@@ -83,7 +83,7 @@
             background-color: #ffffff;
         }
 
-        /* Map Card Styles - Estilo de la imagen */
+        /* Map Card Styles */
         #map-card {
             flex-grow: 1;
             background-color: #f0f2f5;
@@ -129,7 +129,7 @@
              display: block;
         }
         
-        /* Sidebar Styles - Estilo de la imagen */
+        /* Sidebar Styles */
         #sidebar {
             width: 420px; 
             background: #ffffff;
@@ -143,7 +143,7 @@
             box-shadow: 0 5px 15px rgba(0,0,0,0.08);
         }
 
-        /* Search Box Styles (Sidebar) - Estilo de la imagen */
+        /* Search Box Styles (Sidebar) */
         .search-box {
             background: #f8faff; 
             padding: 25px;
@@ -156,9 +156,9 @@
             margin-top: 0;
             margin-bottom: 20px;
             font-size: 20px;
-            color: #3f51b5; 
+            color: #1C2860; /* Color Pantone 280 C */
             font-weight: 700;
-            border-bottom: 2px solid #5c6bc0; 
+            border-bottom: 2px solid #1C2860; /* Color Pantone 280 C */
             padding-bottom: 10px;
             display: inline-block;
         }
@@ -188,14 +188,14 @@
             transition: border-color 0.2s, box-shadow 0.2s;
         }
         .input-with-button input:focus {
-            border-color: #3f51b5;
-            box-shadow: 0 0 0 3px rgba(63, 81, 181, 0.2);
+            border-color: #1C2860; /* Color Pantone 280 C */
+            box-shadow: 0 0 0 3px rgba(28, 40, 96, 0.2); /* Sombra con el color Pantone */
             outline: none;
         }
         .input-with-button button {
             padding: 12px 18px;
             border: none;
-            background-color: #3f51b5;
+            background-color: #1C2860; /* Color Pantone 280 C */
             color: white;
             border-radius: 10px;
             cursor: pointer;
@@ -211,7 +211,7 @@
             font-size: 16px;
         }
         .input-with-button button:hover {
-            background-color: #303f9f;
+            background-color: #1a237e; /* Una sombra más oscura del Pantone */
             transform: translateY(-1px);
         }
         .input-with-button button:active {
@@ -232,17 +232,17 @@
             font-weight: 500;
         }
 
-        /* Property Info and Accordion Styles - Estilo de la imagen */
+        /* Property Info and Accordion Styles */
         #property-info {
             padding-top: 20px;
             border-top: 1px solid #f0f2f5;
         }
         #property-info h4 {
             font-size: 20px;
-            color: #3f51b5;
+            color: #1C2860; /* Color Pantone 280 C */
             margin-bottom: 20px;
             padding-bottom: 10px;
-            border-bottom: 2px solid #5c6bc0;
+            border-bottom: 2px solid #1C2860; /* Color Pantone 280 C */
             display: inline-block;
             font-weight: 700;
         }
@@ -274,9 +274,9 @@
             background-color: #eef2f7;
         }
         .accordion-button.active {
-            background-color: #e8eaf6;
-            color: #3f51b5;
-            border-bottom: 1px solid #c5cae9;
+            background-color: #E8EDF6; /* Un tono más claro del Pantone para el estado activo */
+            color: #1C2860; /* Color Pantone 280 C */
+            border-bottom: 1px solid #D1D9E7; /* Un tono medio del Pantone */
             border-radius: 12px 12px 0 0;
         }
         .accordion-content {
@@ -313,7 +313,7 @@
         }
         .accordion-content ul li::before {
             content: "\2022";
-            color: #3f51b5;
+            color: #1C2860; /* Color Pantone 280 C */
             display: inline-block;
             width: 1em;
             margin-left: -1em;

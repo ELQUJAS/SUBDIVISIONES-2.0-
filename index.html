@@ -257,7 +257,7 @@
             border-radius: 12px 12px 0 0;
         }
         .accordion-content {
-            padding: 15px 20px;
+            padding: 0 20px; /* Cambiado de 15px a 0 para eliminar el padding inicial */
             max-height: 0;
             overflow: hidden;
             transition: max-height 0.3s ease-out, padding 0.3s ease-out;
@@ -266,7 +266,7 @@
         }
         .accordion-content.open {
              max-height: 500px;
-             padding: 15px 20px;
+             padding: 15px 20px; /* Padding solo cuando está abierto */
         }
         .accordion-content p {
             margin: 8px 0;
@@ -774,6 +774,13 @@
                             content.style.maxHeight = null;
                             content.classList.remove('open');
                         } else {
+                            // Cierra otros acordeones si se abren
+                            var allContents = document.querySelectorAll('.accordion-content.open');
+                            allContents.forEach(function(item) {
+                                item.style.maxHeight = null;
+                                item.classList.remove('open');
+                                item.previousElementSibling.classList.remove('active');
+                            });
                             content.style.maxHeight = content.scrollHeight + "px";
                             content.classList.add('open');
                         }

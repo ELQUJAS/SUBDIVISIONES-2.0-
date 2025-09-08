@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -9,9 +9,8 @@
     <link rel="stylesheet" href="css/leaflet.css">
     <link rel="stylesheet" href="css/L.Control.Layers.Tree.css">
     <link rel="stylesheet" href="css/qgis2web.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"> <link rel="stylesheet" href="css/leaflet.photon.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <title>Visor de Información Territorial</title>
+    <link rel="stylesheet" href="css/fontawesome-all.min.css">
+    <link rel="stylesheet" href="css/leaflet.photon.css">
     <style>
         /* Base Styles */
         html, body {
@@ -19,34 +18,25 @@
             height: 100%;
             padding: 0;
             margin: 0;
-            font-family: 'Poppins', sans-serif;
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
             color: #333;
             overflow: hidden;
-            background: linear-gradient(135deg, #e0f2f7 0%, #c8e6c9 100%); /* Fondo degradado suave */
+            background-color: #f0f2f5; /* Fondo general del body, más claro */
         }
 
-        /* Header Styles */
+        /* Header Styles - Similar to image */
         #header {
-            background-color: #3f51b5; /* Azul más oscuro y profesional */
+            background-color: #007bff; /* Azul vibrante */
             color: white;
             padding: 15px 30px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
             position: relative;
-            z-index: 1001;
-            border-bottom-left-radius: 20px;
-            border-bottom-right-radius: 20px;
-        }
-        #header .left-section {
-            display: flex;
-            align-items: center;
-        }
-        #header .left-section i {
-            font-size: 32px;
-            margin-right: 15px;
-            color: #ffeb3b; /* Icono en amarillo */
+            z-index: 1001; /* Asegura que esté por encima de todo */
+            border-bottom-left-radius: 15px; /* Redondeado en la esquina inferior izquierda */
+            border-bottom-right-radius: 15px; /* Redondeado en la esquina inferior derecha */
         }
         #header h1 {
             margin: 0;
@@ -62,332 +52,245 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            margin-left: 30px;
-            color: rgba(255, 255, 255, 0.9);
+            margin-left: 25px;
+            color: rgba(255, 255, 255, 0.85);
             text-decoration: none;
-            transition: color 0.3s ease;
+            transition: color 0.2s;
         }
         #header-icons .icon-item:hover {
-            color: #ffeb3b; /* Amarillo al pasar el mouse */
+            color: white;
         }
         #header-icons .icon-item i {
-            font-size: 22px;
+            font-size: 24px;
             margin-bottom: 5px;
         }
         #header-icons .icon-item span {
-            font-size: 13px;
+            font-size: 12px;
             font-weight: 500;
         }
 
-        /* Main Content Container */
+        /* Main Container for Map and Sidebar */
         #main-content-container {
             display: flex;
-            width: calc(100% - 60px); /* Reduce el ancho para un mejor margen */
-            height: calc(100vh - 120px); /* Ajusta para el header y el margen */
-            margin: 30px auto;
-            border-radius: 25px; /* Bordes más redondeados */
-            overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            background-color: #ffffff;
+            width: calc(100% - 40px); /* Ajuste para el padding del body si lo hubiera */
+            height: calc(100vh - 100px); /* Ajusta para el header y el margen inferior */
+            margin: 20px auto; /* Centrar y dar margen */
+            border-radius: 15px; /* Bordes redondeados en el contenedor principal */
+            overflow: hidden; /* Importante para que los bordes redondeados funcionen bien */
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15); /* Sombra más pronunciada */
+            background-color: #fff; /* Fondo blanco para el contenedor */
         }
 
-        /* Map Card Styles */
-        #map-card {
+        /* Map Styles */
+        #map {
             flex-grow: 1;
-            background-color: #f0f2f5;
-            border-radius: 25px; /* Coincide con el contenedor principal */
-            margin: 20px; /* Margen interno para la tarjeta del mapa */
-            overflow: hidden;
-            position: relative;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
-            display: flex; /* Para centrar la imagen si es el caso */
-            align-items: center;
-            justify-content: center;
-        }
-        #map {
-            width: 100%;
             height: 100%;
-            border-radius: 20px; /* Redondeado un poco menos que la tarjeta para el mapa interno */
-            overflow: hidden;
+            min-width: 500px; /* Asegura un tamaño mínimo para el mapa */
+            background-color: #e6e9ed; /* Fondo sutil para el área del mapa */
         }
-        /* Para la imagen de fondo estática, si decides usarla */
-        /*
-        #map {
-            background-image: url('path/to/your/villarrica-image.jpg');
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            width: 100%;
-            height: 100%;
-        }
-        */
 
-        #map-overlay-info {
-            position: absolute;
-            top: 20px;
-            left: 20px;
+        /* Coordinates Display */
+        #coordinates {
+            position: fixed; /* Cambiado a fixed para que se mantenga fijo */
+            bottom: 15px;
+            left: 15px;
+            z-index: 1000;
             background: rgba(255, 255, 255, 0.9);
-            padding: 10px 15px;
-            border-radius: 12px;
-            font-size: 14px;
-            font-weight: 600;
-            color: #333;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            border: 1px solid #e0e0e0;
-        }
-        #map-coordinates-display {
-            position: absolute;
-            bottom: 20px;
-            left: 20px;
-            background: rgba(255, 255, 255, 0.9);
-            padding: 10px 15px;
-            border-radius: 12px;
+            padding: 8px 12px;
+            border-radius: 8px;
             font-size: 13px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
             color: #555;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            border: 1px solid #e0e0e0;
         }
-        #map-coordinates-display b {
-            font-weight: 600;
-            color: #333;
-        }
-
+        
         /* Sidebar Styles */
         #sidebar {
-            width: 420px; /* Ancho ligeramente mayor para el sidebar */
-            background: #ffffff;
-            padding: 30px;
+            width: 380px;
+            background: #ffffff; /* Fondo blanco para el sidebar */
+            padding: 25px; /* Más padding */
             overflow-y: auto;
             z-index: 900;
             box-sizing: border-box;
-            border-left: 1px solid #e0e0e0;
-            border-top-right-radius: 25px;
-            border-bottom-right-radius: 25px;
+            border-left: 1px solid #e0e0e0; /* Borde sutil a la izquierda */
+            border-top-right-radius: 15px; /* Bordes redondeados arriba y abajo a la derecha */
+            border-bottom-right-radius: 15px;
         }
 
-        /* Search Box Styles (Sidebar) */
+        /* Search Box Styles */
         .search-box {
-            background: #f8faff; /* Fondo muy claro, casi blanco */
-            padding: 25px;
-            border-radius: 15px;
-            margin-bottom: 30px;
-            border: 1px solid #e7eef6;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+            background: #f9fbfd; /* Fondo muy claro para los cuadros de búsqueda */
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            border: 1px solid #e8edf2; /* Borde muy sutil */
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.05); /* Sombra interna sutil */
         }
         .search-box h4 {
             margin-top: 0;
-            margin-bottom: 20px;
-            font-size: 20px;
-            color: #3f51b5; /* Azul oscuro */
-            font-weight: 700;
-            border-bottom: 2px solid #5c6bc0; /* Azul más claro para subrayado */
-            padding-bottom: 10px;
-            display: inline-block;
-        }
-        .search-group {
             margin-bottom: 15px;
+            font-size: 18px;
+            color: #2c3e50; /* Color de título oscuro */
+            font-weight: 700;
+            border-bottom: 2px solid #007bff; /* Subrayado azul */
+            padding-bottom: 8px;
+            display: inline-block; /* Para que el subrayado se ajuste al texto */
         }
-        .search-group label {
+        .search-box label {
             display: block;
             font-size: 13px;
-            color: #607d8b; /* Gris azulado */
-            margin-bottom: 8px;
+            color: #6a7a8d; /* Texto de label más sutil */
+            margin-bottom: 5px;
             font-weight: 500;
         }
-        .input-with-button {
-            display: flex;
-            gap: 10px;
-        }
-        .input-with-button input {
-            flex-grow: 1;
+        .search-box input {
+            width: 100%;
             padding: 12px 15px;
+            margin-bottom: 10px;
             box-sizing: border-box;
-            border: 1px solid #d4dce7;
-            border-radius: 10px;
+            border: 1px solid #dcdfe6; /* Borde más sutil */
+            border-radius: 8px; /* Bordes más redondeados */
             font-size: 14px;
-            color: #455a64;
+            color: #495057;
             background-color: #ffffff;
             transition: border-color 0.2s, box-shadow 0.2s;
         }
-        .input-with-button input:focus {
-            border-color: #3f51b5;
-            box-shadow: 0 0 0 3px rgba(63, 81, 181, 0.2);
+        .search-box input:focus {
+            border-color: #007bff; /* Azul al enfocar */
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25); /* Resaltado de foco */
             outline: none;
         }
-        .input-with-button button {
-            padding: 12px 18px;
+        .search-box button {
+            width: 100%;
+            padding: 12px 15px;
             border: none;
-            background-color: #3f51b5;
             color: white;
-            border-radius: 10px;
+            border-radius: 8px; /* Bordes más redondeados */
             cursor: pointer;
             font-size: 15px;
             font-weight: 600;
             transition: background-color 0.2s, transform 0.1s;
-            box-shadow: 0 3px 8px rgba(0,0,0,0.1);
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1); /* Sombra para botones */
         }
-        .input-with-button button i {
-            margin-left: 5px; /* Espacio para el ícono de lupa */
-            font-size: 16px;
+        .search-box button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.15);
         }
-        .input-with-button button:hover {
-            background-color: #303f9f;
-            transform: translateY(-1px);
-        }
-        .input-with-button button:active {
+        .search-box button:active {
             transform: translateY(0);
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
-
-        .search-button-group {
-            display: flex;
-            gap: 15px; /* Espacio entre los botones de abajo */
-            margin-top: 20px;
-        }
-        .search-button-group button {
-            flex-grow: 1;
-            padding: 14px; /* Mayor padding para estos botones */
-            border: none;
-            color: white;
-            border-radius: 10px;
-            cursor: pointer;
-            font-size: 16px;
-            font-weight: 600;
-            transition: background-color 0.2s, transform 0.1s;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-        }
-        .search-button-group button:first-child { /* Botón de Coordenadas */
+        /* Específico para botones de búsqueda */
+        .search-box button:first-of-type { /* Botón de Coordenadas */
             background-color: #007bff; /* Azul */
         }
-        .search-button-group button:first-child:hover {
-            background-color: #0056b3;
+        .search-box button:first-of-type:hover {
+            background-color: #0069d9;
         }
-        .search-button-group button:last-child { /* Botón de ROL */
-            background-color: #4CAF50; /* Verde */
+        .search-box button:last-of-type { /* Botón de ROL */
+            background-color: #28a745; /* Verde */
         }
-        .search-button-group button:last-child:hover {
-            background-color: #388E3C;
+        .search-box button:last-of-type:hover {
+            background-color: #218838;
         }
         .search-message {
             margin-top: 10px;
             font-size: 13px;
-            color: #d32f2f; /* Rojo de error más fuerte */
+            color: #dc3545; /* Rojo de error */
             font-weight: 500;
         }
 
         /* Property Info and Accordion Styles */
         #property-info {
-            padding-top: 20px;
-            border-top: 1px solid #f0f2f5;
+            padding-top: 15px;
+            border-top: 1px solid #f0f2f5; /* Separador más sutil */
         }
         #property-info h4 {
-            font-size: 20px;
-            color: #3f51b5;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #5c6bc0;
+            font-size: 18px;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #007bff; /* Subrayado azul */
             display: inline-block;
             font-weight: 700;
         }
         .accordion-item {
-            border: 1px solid #e0e0e0;
-            border-radius: 12px; /* Más redondeado */
-            margin-bottom: 12px;
+            border: 1px solid #e0e0e0; /* Borde general del item */
+            border-radius: 8px;
+            margin-bottom: 10px;
             overflow: hidden;
             background-color: #ffffff;
-            box-shadow: 0 3px 8px rgba(0,0,0,0.05);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
         }
         .accordion-button {
-            background-color: #f7f9fc; /* Fondo muy claro */
-            color: #424242; /* Gris oscuro */
+            background-color: #fcfcfc; /* Fondo muy claro para el botón */
+            color: #333;
             cursor: pointer;
-            padding: 15px 20px;
+            padding: 12px 18px;
             width: 100%;
             text-align: left;
             border: none;
             outline: none;
             transition: background-color 0.3s, color 0.3s;
-            font-size: 16px;
-            font-weight: 600;
-            display: flex;
+            font-size: 15px;
+            font-weight: 500;
+            display: flex; /* Para alinear el chevron a la derecha */
             justify-content: space-between;
             align-items: center;
         }
         .accordion-button:hover {
-            background-color: #eef2f7;
+            background-color: #f0f0f0;
         }
         .accordion-button.active {
-            background-color: #e8eaf6; /* Azul claro más suave */
-            color: #3f51b5;
-            border-bottom: 1px solid #c5cae9;
-            border-radius: 12px 12px 0 0;
+            background-color: #e0f2f7; /* Fondo azul claro cuando está activo */
+            color: #0056b3; /* Texto azul oscuro */
+            border-bottom: 1px solid #b3e0ed; /* Borde inferior al abrir */
+            border-radius: 8px 8px 0 0; /* Solo esquinas superiores redondeadas cuando activo */
         }
         .accordion-content {
-            padding: 15px 20px;
+            padding: 10px 18px; /* Ajuste de padding */
             max-height: 0;
             overflow: hidden;
-            transition: max-height 0.3s ease-out, padding 0.3s ease-out;
-            background-color: #ffffff;
-            border-top: 1px solid #f0f0f0;
+            transition: max-height 0.3s ease-out, padding 0.3s ease-out; /* Transición para padding */
+            background-color: #fefefe; /* Fondo más blanco para el contenido */
+            border-top: 1px solid #f0f0f0; /* Separador sutil */
         }
-        .accordion-content.open {
-             max-height: 500px;
-             padding: 15px 20px;
+        .accordion-content.open { /* Clase para cuando el contenido está abierto */
+             max-height: 500px; /* Un valor grande para mostrar todo el contenido */
+             padding: 10px 18px;
         }
         .accordion-content p {
-            margin: 8px 0;
+            margin: 8px 0; /* Espaciado entre párrafos */
             font-size: 14px;
             color: #555;
-            line-height: 1.6;
+            line-height: 1.5;
         }
         .accordion-content p b {
             color: #333;
             font-weight: 600;
         }
-        /* List item style for construction details */
-        .accordion-content ul {
-            list-style: none; /* Elimina viñetas por defecto */
-            padding: 0;
-            margin: 0;
-        }
-        .accordion-content ul li {
-            margin-bottom: 8px;
-            font-size: 14px;
-            color: #555;
-        }
-        .accordion-content ul li::before {
-            content: "\2022"; /* Bullet point customizado */
-            color: #3f51b5; /* Color del bullet */
-            display: inline-block;
-            width: 1em;
-            margin-left: -1em;
-        }
         /* Chevron (flecha) icon for accordion */
         .accordion-button::after {
-            content: '\f078';
-            font-family: 'Font Awesome 6 Free'; /* Asegúrate de que coincida con la versión */
+            content: '\f078'; /* Usamos el ícono de chevron down de Font Awesome */
+            font-family: 'Font Awesome 5 Free';
             font-weight: 900;
             font-size: 14px;
             color: #888;
             margin-left: 10px;
             transition: transform 0.2s ease-in-out;
-            transform: rotate(-90deg); /* Apunta a la izquierda por defecto */
+            transform: rotate(270deg);
         }
         .accordion-button.active::after {
-            transform: rotate(0deg); /* Apunta hacia abajo cuando activo */
+            transform: rotate(0deg); /* Gira a 0 grados (abajo) cuando está activo */
         }
 
         /* Tooltip Styles (for ROL on map) */
         .white-tooltip {
             color: white;
             font-weight: bold;
-            background-color: rgba(0, 0, 0, 0.75);
-            border: 1px solid #fff;
-            border-radius: 8px;
-            padding: 6px 10px;
+            background-color: rgba(0, 0, 0, 0.75); /* Fondo más oscuro */
+            border: 1px solid #fff; /* Borde blanco */
+            border-radius: 5px; /* Bordes redondeados */
+            padding: 5px 8px;
             font-size: 13px;
         }
         .leaflet-tooltip-bottom:before, .leaflet-tooltip-top:before, .leaflet-tooltip-left:before, .leaflet-tooltip-right:before {
@@ -396,10 +299,10 @@
 
         /* Leaflet Controls Customization */
         .leaflet-control-zoom {
-            border-radius: 10px;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
-            margin-left: 20px;
-            margin-top: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            margin-left: 15px; /* Ajuste de posición */
+            margin-top: 15px;
         }
         .leaflet-control-zoom a {
             color: #555;
@@ -411,95 +314,73 @@
             color: #333;
         }
         .leaflet-control-zoom a.leaflet-control-zoom-out {
-            border-radius: 0 0 10px 10px;
+            border-radius: 0 0 8px 8px;
         }
         .leaflet-control-zoom a.leaflet-control-zoom-in {
-            border-radius: 10px 10px 0 0;
+            border-radius: 8px 8px 0 0;
         }
         .leaflet-control-layers {
-            border-radius: 10px;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
             background-color: #fff;
             color: #333;
         }
         .leaflet-control-layers-toggle {
             background-color: #fff;
-            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="%23333"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/></svg>');
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="%23333"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/></svg>'); /* Icono de info */
             background-size: 20px 20px;
             background-position: center;
             background-repeat: no-repeat;
-            width: 38px;
-            height: 38px;
-            border-radius: 10px;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            width: 36px;
+            height: 36px;
+            border-radius: 8px; /* Para que el toggle también tenga bordes redondeados */
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
         }
-        /* Adjust Font Awesome icons within the tree control */
+        /* Ajuste específico para el tree control, si usas íconos de Font Awesome en él */
         .leaflet-control-layers-tree label i {
-            margin-right: 8px;
+            margin-right: 5px;
             color: #555;
         }
     </style>
+    <title>Visor de Coordenadas y Roles</title>
 </head>
 <body>
     <div id="header">
-        <div class="left-section">
-            <i class="fas fa-mountain-sun"></i> <h1>INFORMACIÓN TERRITORIAL DE LA COMUNA DE VILLARRICA</h1>
-        </div>
+        <h1>INFORMACIÓN TERRITORIAL DE LA COMUNA DE VILLARRICA</h1>
         <div id="header-icons">
             <a href="#" class="icon-item">
                 <i class="fas fa-home"></i>
                 <span>Inicio</span>
             </a>
             <a href="#" class="icon-item">
-                <i class="fas fa-file-invoice"></i> <span>Buscar Rol</span>
-            </a>
-            <a href="#" class="icon-item">
-                <i class="fas fa-map-marked-alt"></i> <span>Gestión Territorial</span>
+                <i class="fas fa-search"></i>
+                <span>Buscar Rol</span>
             </a>
         </div>
     </div>
 
     <div id="main-content-container">
-        <div id="map-card">
-            <div id="map"></div>
-            <div id="map-overlay-info">ROL: <span id="overlay-rol">1234-5</span></div>
-            <div id="map-coordinates-display">
-                <b>Latitud:</b> <span id="display-lat">-39.283120</span><br>
-                <b>Longitud:</b> <span id="display-lon">-72.234567</span>
-            </div>
-        </div>
+        <div id="map"></div>
+        <div id="coordinates">Mueva el mouse sobre el mapa para ver las coordenadas.</div>
         
         <div id="sidebar">
             <div class="search-box">
                 <h4>Buscadores</h4>
-                <div class="search-group">
-                    <label for="coord-input">Latitud, Longitud</label>
-                    <div class="input-with-button">
-                        <input type="text" id="coord-input" placeholder="Latitud, Longitud">
-                        <button onclick="searchCoordinates()"><i class="fas fa-search"></i></button>
-                    </div>
-                    <div id="coord-search-message" class="search-message"></div>
-                </div>
+                <label for="coord-input">Latitud, Longitud (Ej: -33.21 -71.24)</label>
+                <input type="text" id="coord-input" placeholder="Latitud, Longitud">
+                <button onclick="searchCoordinates()">Buscar</button>
+                <div id="coord-search-message" class="search-message"></div>
                 
-                <div class="search-group">
-                    <label for="rol-input">Buscar ROL</label>
-                    <div class="input-with-button">
-                        <input type="text" id="rol-input" placeholder="Buscar ROL-5" list="rols-list">
-                        <datalist id="rols-list"></datalist>
-                        <button onclick="searchRol()"><i class="fas fa-search"></i></button>
-                    </div>
-                    <div id="rol-search-message" class="search-message"></div>
-                </div>
-                
-                <div class="search-button-group">
-                    <button onclick="searchCoordinates()">Buscar</button>
-                    <button onclick="searchRol()">Buscar ROL</button>
-                </div>
+                <label for="rol-input" style="margin-top: 20px;">Buscar ROL (Ej: 1234-5)</label>
+                <input type="text" id="rol-input" placeholder="Buscar ROL" list="rols-list">
+                <datalist id="rols-list"></datalist>
+                <button onclick="searchRol()">Buscar ROL</button>
+                <div id="rol-search-message" class="search-message"></div>
             </div>
             
             <div id="property-info">
                 <h4>Información de ROL</h4>
-                </div>
+            </div>
         </div>
     </div>
 
@@ -541,7 +422,7 @@
             minNativeZoom: 0,
             maxNativeZoom: 19
         });
-        // map.addLayer(layer_OpenStreetMap_0); // Comentado para priorizar Google Satellite o si se usa imagen estática
+        map.addLayer(layer_OpenStreetMap_0);
 
         map.createPane('pane_GoogleSatellite_1');
         map.getPane('pane_GoogleSatellite_1').style.zIndex = 401;
@@ -554,72 +435,35 @@
             minNativeZoom: 0,
             maxNativeZoom: 19
         });
-        map.addLayer(layer_GoogleSatellite_1); // Añadido por defecto para que haya una capa base visible
-
-        // Inicializar los elementos de la superposición del mapa
-        var overlayRolSpan = document.getElementById('overlay-rol');
-        var displayLatSpan = document.getElementById('display-lat');
-        var displayLonSpan = document.getElementById('display-lon');
+        map.addLayer(layer_GoogleSatellite_1);
 
         function pop_SUBDIVISIONESAO20232024_2(feature, layer) {
-            var rolValue = feature.properties['ROL'] !== null ? String(feature.properties['ROL']) : '';
-            var zonaPri = feature.properties['ZONA PRI'] !== null ? autolinker.link(String(feature.properties['ZONA PRI']).replace(/'/g, '\'').toLocaleString()) : 'N/A';
-            var zona = feature.properties['ZONA'] !== null ? autolinker.link(String(feature.properties['ZONA']).replace(/'/g, '\'').toLocaleString()) : 'N/A';
-            var estadoLag = feature.properties['ESTADO LAG'] !== null ? autolinker.link(String(feature.properties['ESTADO LAG']).replace(/'/g, '\'').toLocaleString()) : 'N/A';
-            var peligroVo = feature.properties['PELIGRO VO'] !== null ? autolinker.link(String(feature.properties['PELIGRO VO']).replace(/'/g, '\'').toLocaleString()) : 'N/A';
-            var construcci = feature.properties['CONSTRUCCI'] !== null ? autolinker.link(String(feature.properties['CONSTRUCCI']).replace(/'/g, '\'').toLocaleString()) : 'N/A';
-            var aprobacion = feature.properties['APROBACION'] !== null ? autolinker.link(String(feature.properties['APROBACION']).replace(/'/g, '\'').toLocaleString()) : 'N/A';
-            var recepcion = feature.properties['RECEPCIÓN'] !== null ? autolinker.link(String(feature.properties['RECEPCIÓN']).replace(/'/g, '\'').toLocaleString()) : 'N/A';
-            var fecha = feature.properties['FECHA'] !== null ? autolinker.link(String(feature.properties['FECHA']).replace(/'/g, '\'').toLocaleString()) : 'N/A';
-            var ubicacion = feature.properties['UBICACIÓN'] !== null ? autolinker.link(String(feature.properties['UBICACIÓN']).replace(/'/g, '\'').toLocaleString()) : 'N/A';
-            var propietario = feature.properties['PROPIETARI'] !== null ? autolinker.link(String(feature.properties['PROPIETARI']).replace(/'/g, '\'').toLocaleString()) : 'N/A';
-            var superficie = feature.properties['SUPERFICIE'] !== null ? autolinker.link(String(feature.properties['SUPERFICIE']).replace(/'/g, '\'').toLocaleString()) : 'N/A';
-            var destino = feature.properties['DESTINO '] !== null ? autolinker.link(String(feature.properties['DESTINO ']).replace(/'/g, '\'').toLocaleString()) : 'N/A';
-
-
-            // Actualiza la superposición de ROL en la tarjeta del mapa
-            overlayRolSpan.textContent = rolValue;
-
             var popupContent = '<div>\
-                <h4 style="display: none;">ROL: ' + rolValue + '</h4> \
+                <h4>ROL: ' + (feature.properties['ROL'] !== null ? String(feature.properties['ROL']) : '') + '</h4>\
                 \
                 <div class="accordion-item">\
-                    <button class="accordion-button">ZONA PRI</button>\
+                    <button class="accordion-button">Gestión Territorial</button>\
                     <div class="accordion-content">\
-                        <p><b>ZONA PRI VILLARRICA-PUCÓN:</b> ' + zonaPri + '</p>\
+                        <p><b>ZONA PRI VILLARRICA-PUCÓN:</b> ' + (feature.properties['ZONA PRI'] !== null ? autolinker.link(String(feature.properties['ZONA PRI']).replace(/'/g, '\'').toLocaleString()) : 'N/A') + '</p>\
+                        <p><b>SECTOR:</b> ' + (feature.properties['ZONA'] !== null ? autolinker.link(String(feature.properties['ZONA']).replace(/'/g, '\'').toLocaleString()) : 'N/A') + '</p>\
+                        <p><b>ZONA LAGO SATURADO:</b> ' + (feature.properties['ESTADO LAG'] !== null ? autolinker.link(String(feature.properties['ESTADO LAG']).replace(/'/g, '\'').toLocaleString()) : 'N/A') + '</p>\
+                        <p><b>PELIGRO VOLCÁNICO:</b> ' + (feature.properties['PELIGRO VO'] !== null ? autolinker.link(String(feature.properties['PELIGRO VO']).replace(/'/g, '\'').toLocaleString()) : 'N/A') + '</p>\
                     </div>\
                 </div>\
                 \
                 <div class="accordion-item">\
-                    <button class="accordion-button">ZONA SECTOR</button>\
+                    <button class="accordion-button">Construcciones</button>\
                     <div class="accordion-content">\
-                        <p><b>SECTOR:</b> ' + zona + '</p>\
-                    </div>\
-                </div>\
-                \
-                <div class="accordion-item">\
-                    <button class="accordion-button">ESTADO LAGO</button>\
-                    <div class="accordion-content">\
-                        <p><b>ZONA LAGO SATURADO:</b> ' + estadoLag + '</p>\
-                        <p><b>PELIGRO VOLCÁNICO:</b> ' + peligroVo + '</p>\
-                    </div>\
-                </div>\
-                \
-                <div class="accordion-item">\
-                    <button class="accordion-button">APROBACIÓN PERMISO</button>\
-                    <div class="accordion-content">\
-                        <ul>\
-                            <li><b>NÚMERO DE CONSTRUCCIONES:</b> ' + construcci + '</li>\
-                            <li><b>PERMISO DE EDIFICACIÓN:</b> ' + aprobacion + '</li>\
-                            <li><b>RECEPCIÓN DEFINITIVA:</b> ' + recepcion + '</li>\
-                        </ul>\
+                        <p><b>NÚMERO DE CONSTRUCCIONES:</b> ' + (feature.properties['CONSTRUCCI'] !== null ? autolinker.link(String(feature.properties['CONSTRUCCI']).replace(/'/g, '\'').toLocaleString()) : 'N/A') + '</p>\
+                        <p><b>PERMISO DE EDIFICACIÓN:</b> ' + (feature.properties['APROBACION'] !== null ? autolinker.link(String(feature.properties['APROBACION']).replace(/'/g, '\'').toLocaleString()) : 'N/A') + '</p>\
+                        <p><b>RECEPCIÓN DEFINITIVA:</b> ' + (feature.properties['RECEPCIÓN'] !== null ? autolinker.link(String(feature.properties['RECEPCIÓN']).replace(/'/g, '\'').toLocaleString()) : 'N/A') + '</p>\
                     </div>\
                 </div>\
             </div>';
 
             var propertyInfoDiv = document.getElementById('property-info');
-            propertyInfoDiv.innerHTML = '<h4>Información de ROL</h4>' + popupContent; // Mantener el título H4
-            initializeAccordion(); // Re-inicializar acordeones
+            propertyInfoDiv.innerHTML = popupContent;
+            initializeAccordion();
         }
         
         var defaultStyle = {
@@ -639,14 +483,14 @@
         var highlightStyle = {
             pane: 'pane_SUBDIVISIONESAO20232024_2',
             opacity: 1,
-            color: '#3f51b5', // Azul primario para el resaltado
+            color: 'rgba(0, 0, 255, 1.0)',
             dashArray: '',
             lineCap: 'butt',
             lineJoin: 'miter',
             weight: 3.0,
             fill: true,
-            fillOpacity: 0.3,
-            fillColor: '#8c9eff', // Azul más claro para el relleno
+            fillOpacity: 0.2,
+            fillColor: 'rgba(0, 0, 255, 0.5)',
             interactive: true,
         };
 
@@ -750,12 +594,12 @@
         });
         lay.addTo(map);
 
-        // Actualiza el div de coordenadas en la superposición del mapa
+        var coordinatesDiv = document.getElementById('coordinates');
+        
         map.on('mousemove', function(e) {
             var lat = e.latlng.lat.toFixed(6);
             var lng = e.latlng.lng.toFixed(6);
-            displayLatSpan.textContent = lat;
-            displayLonSpan.textContent = lng;
+            coordinatesDiv.innerHTML = `Latitud: ${lat}<br>Longitud: ${lng}`;
         });
         
         map.on('click', function() {
@@ -763,7 +607,6 @@
                 layer_SUBDIVISIONESAO20232024_2.resetStyle(highlightedLayer);
                 highlightedLayer = null;
                 document.getElementById('property-info').innerHTML = '<h4>Información de ROL</h4>'; // Restablece el div de info
-                overlayRolSpan.textContent = 'N/A'; // Restablece el ROL de la superposición
             }
             if (coordMarker) {
                 map.removeLayer(coordMarker);
@@ -825,14 +668,13 @@
 
             if (!found) {
                 rolSearchMessageDiv.innerHTML = "ROL no encontrado. Intente con otro valor.";
-                rolSearchMessageDiv.style.color = '#d32f2f'; // Rojo de error
-                overlayRolSpan.textContent = 'N/A';
+                rolSearchMessageDiv.style.color = 'red';
             }
         }
 
         function searchCoordinates() {
             var inputString = document.getElementById('coord-input').value.trim();
-            var coords = inputString.split(/,\s*|\s+/).map(Number); // Permite coma o espacio como separador
+            var coords = inputString.split(/\s+/).map(Number);
             
             if (coordMarker) {
                 map.removeLayer(coordMarker);
@@ -846,13 +688,10 @@
             rolSearchMessageDiv.innerHTML = "";
             coordSearchMessageDiv.innerHTML = "";
             document.getElementById('property-info').innerHTML = '<h4>Información de ROL</h4>'; // Restablece el div de info
-            overlayRolSpan.textContent = 'N/A'; // Restablece el ROL de la superposición
 
             if (coords.length !== 2 || isNaN(coords[0]) || isNaN(coords[1])) {
-                coordSearchMessageDiv.innerHTML = "Formato no válido. Ingrese Latitud y Longitud (Ej: -33.21 -71.24 o -33.21,-71.24).";
-                coordSearchMessageDiv.style.color = '#d32f2f';
-                displayLatSpan.textContent = 'N/A';
-                displayLonSpan.textContent = 'N/A';
+                coordSearchMessageDiv.innerHTML = "Formato no válido. Ingrese Latitud y Longitud separadas por un espacio.";
+                coordSearchMessageDiv.style.color = 'red';
                 return;
             }
 
@@ -873,10 +712,6 @@
             });
 
             coordMarker = L.marker(newCenter, {icon: customIcon}).addTo(map);
-
-            // Actualiza las coordenadas de la superposición inmediatamente
-            displayLatSpan.textContent = latInput.toFixed(6);
-            displayLonSpan.textContent = lonInput.toFixed(6);
 
             var foundFeature = null;
             var foundLayer = null;
@@ -904,36 +739,32 @@
                     offset: [0, -35]
                 }).openTooltip();
                 coordSearchMessageDiv.innerHTML = "No se encontró ROL para esta coordenada.";
-                coordSearchMessageDiv.style.color = '#d32f2f';
-                overlayRolSpan.textContent = 'N/A';
+                coordSearchMessageDiv.style.color = 'red';
             }
         }
         
         function initializeAccordion() {
             var acc = document.getElementsByClassName("accordion-button");
             for (var i = 0; i < acc.length; i++) {
-                // Remove existing listeners to prevent duplication
-                var old_element = acc[i];
-                var new_element = old_element.cloneNode(true);
-                old_element.parentNode.replaceChild(new_element, old_element);
-
-                // Add new listener
-                new_element.addEventListener("click", function() {
-                    this.classList.toggle("active");
-                    var content = this.nextElementSibling;
-                    if (content.style.maxHeight) {
-                        content.style.maxHeight = null;
-                        content.classList.remove('open');
-                    } else {
-                        content.style.maxHeight = content.scrollHeight + "px";
-                        content.classList.add('open');
-                    } 
-                });
+                // Ensure event listeners are not duplicated
+                if (!acc[i].classList.contains('has-listener')) {
+                    acc[i].addEventListener("click", function() {
+                        this.classList.toggle("active");
+                        var content = this.nextElementSibling;
+                        if (content.style.maxHeight) {
+                            content.style.maxHeight = null;
+                            content.classList.remove('open');
+                        } else {
+                            content.style.maxHeight = content.scrollHeight + "px";
+                            content.classList.add('open');
+                        } 
+                    });
+                    acc[i].classList.add('has-listener');
+                }
             }
         }
 
         setBounds();
-        initializeAccordion(); // Llama esto al inicio para que los acordeones funcionen si se carga info por defecto.
     </script>
 </body>
 </html>

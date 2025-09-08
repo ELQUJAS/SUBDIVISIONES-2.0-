@@ -270,17 +270,17 @@
         }
         /* Chevron (flecha) icon for accordion */
         .accordion-button::after {
-            content: '>'; /* Usamos el carácter > para la flecha */
-            font-family: 'Font Awesome 5 Free'; /* Asegúrate de que Font Awesome esté cargado */
-            font-weight: 900; /* Para el ícono sólido */
+            content: '\f078'; /* Usamos el ícono de chevron down de Font Awesome */
+            font-family: 'Font Awesome 5 Free';
+            font-weight: 900;
             font-size: 14px;
             color: #888;
             margin-left: 10px;
             transition: transform 0.2s ease-in-out;
-            transform: rotate(90deg); /* Inicio hacia la derecha */
+            transform: rotate(270deg);
         }
         .accordion-button.active::after {
-            transform: rotate(270deg); /* Gira hacia abajo cuando está activo */
+            transform: rotate(0deg); /* Gira a 0 grados (abajo) cuando está activo */
         }
 
         /* Tooltip Styles (for ROL on map) */
@@ -356,6 +356,10 @@
                 <i class="fas fa-search"></i>
                 <span>Buscar Rol</span>
             </a>
+            <a href="#" class="icon-item">
+                <i class="fas fa-sitemap"></i>
+                <span>Gestión Territorial</span>
+            </a>
         </div>
     </div>
 
@@ -380,7 +384,7 @@
             
             <div id="property-info">
                 <h4>Información de ROL</h4>
-                </div>
+            </div>
         </div>
     </div>
 
@@ -440,48 +444,28 @@
         function pop_SUBDIVISIONESAO20232024_2(feature, layer) {
             var popupContent = '<div>\
                 <h4>ROL: ' + (feature.properties['ROL'] !== null ? String(feature.properties['ROL']) : '') + '</h4>\
+                \
                 <div class="accordion-item">\
-                    <button class="accordion-button">ZONA PRI</button>\
+                    <button class="accordion-button">Gestión Territorial</button>\
                     <div class="accordion-content">\
-                        <p>' + (feature.properties['ZONA PRI'] !== null ? autolinker.link(String(feature.properties['ZONA PRI']).replace(/'/g, '\'').toLocaleString()) : 'N/A') + '</p>\
-                    </div>\
-                </div>\
-                <div class="accordion-item">\
-                    <button class="accordion-button">ZONA</button>\
-                    <div class="accordion-content">\
-                        <p>' + (feature.properties['ZONA'] !== null ? autolinker.link(String(feature.properties['ZONA']).replace(/'/g, '\'').toLocaleString()) : 'N/A') + '</p>\
-                    </div>\
-                </div>\
-                <div class="accordion-item">\
-                    <button class="accordion-button">ESTADO LAGO</button>\
-                    <div class="accordion-content">\
-                        <p>' + (feature.properties['ESTADO LAG'] !== null ? autolinker.link(String(feature.properties['ESTADO LAG']).replace(/'/g, '\'').toLocaleString()) : 'N/A') + '</p>\
-                    </div>\
-                </div>\
-                <div class="accordion-item">\
-                    <button class="accordion-button">CONSTRUCCIONES</button>\
-                    <div class="accordion-content">\
-                        <p>' + (feature.properties['CONSTRUCCI'] !== null ? autolinker.link(String(feature.properties['CONSTRUCCI']).replace(/'/g, '\'').toLocaleString()) : 'N/A') + '</p>\
+                        <p><b>ZONA PRI VILLARRICA-PUCÓN:</b> ' + (feature.properties['ZONA PRI'] !== null ? autolinker.link(String(feature.properties['ZONA PRI']).replace(/'/g, '\'').toLocaleString()) : 'N/A') + '</p>\
+                        <p><b>SECTOR:</b> ' + (feature.properties['ZONA'] !== null ? autolinker.link(String(feature.properties['ZONA']).replace(/'/g, '\'').toLocaleString()) : 'N/A') + '</p>\
+                        <p><b>ZONA LAGO SATURADO:</b> ' + (feature.properties['ESTADO LAG'] !== null ? autolinker.link(String(feature.properties['ESTADO LAG']).replace(/'/g, '\'').toLocaleString()) : 'N/A') + '</p>\
+                        <p><b>PELIGRO VOLCÁNICO:</b> ' + (feature.properties['PELIGRO VO'] !== null ? autolinker.link(String(feature.properties['PELIGRO VO']).replace(/'/g, '\'').toLocaleString()) : 'N/A') + '</p>\
                     </div>\
                 </div>\
                 \
-                \
                 <div class="accordion-item">\
-                    <button class="accordion-button">APROBACIÓN PERMISO: ' + (feature.properties['APROBACION'] !== null ? autolinker.link(String(feature.properties['APROBACION']).replace(/'/g, '\'').toLocaleString()) : 'N/A') + '</button>\
+                    <button class="accordion-button">Construcciones</button>\
                     <div class="accordion-content">\
-                        <p><b>Fecha:</b> ' + (feature.properties['FECHA'] !== null ? autolinker.link(String(feature.properties['FECHA']).replace(/'/g, '\'').toLocaleString()) : 'N/A') + '</p>\
+                        <p><b>NÚMERO DE CONSTRUCCIONES:</b> ' + (feature.properties['CONSTRUCCI'] !== null ? autolinker.link(String(feature.properties['CONSTRUCCI']).replace(/'/g, '\'').toLocaleString()) : 'N/A') + '</p>\
+                        <p><b>PERMISO DE EDIFICACIÓN:</b> ' + (feature.properties['APROBACION'] !== null ? autolinker.link(String(feature.properties['APROBACION']).replace(/'/g, '\'').toLocaleString()) : 'N/A') + '</p>\
+                        <p><b>RECEPCIÓN DEFINITIVA:</b> ' + (feature.properties['RECEPCIÓN'] !== null ? autolinker.link(String(feature.properties['RECEPCIÓN']).replace(/'/g, '\'').toLocaleString()) : 'N/A') + '</p>\
+                        <p><b>FECHA:</b> ' + (feature.properties['FECHA'] !== null ? autolinker.link(String(feature.properties['FECHA']).replace(/'/g, '\'').toLocaleString()) : 'N/A') + '</p>\
                         <p><b>Ubicación:</b> ' + (feature.properties['UBICACIÓN'] !== null ? autolinker.link(String(feature.properties['UBICACIÓN']).replace(/'/g, '\'').toLocaleString()) : 'N/A') + '</p>\
                         <p><b>Propietario:</b> ' + (feature.properties['PROPIETARI'] !== null ? autolinker.link(String(feature.properties['PROPIETARI']).replace(/'/g, '\'').toLocaleString()) : 'N/A') + '</p>\
                         <p><b>SUPERFICIE (MT2):</b> ' + (feature.properties['SUPERFICIE'] !== null ? autolinker.link(String(feature.properties['SUPERFICIE']).replace(/'/g, '\'').toLocaleString()) : 'N/A') + '</p>\
                         <p><b>Destino:</b> ' + (feature.properties['DESTINO '] !== null ? autolinker.link(String(feature.properties['DESTINO ']).replace(/'/g, '\'').toLocaleString()) : 'N/A') + '</p>\
-                        <p><b>Recepción:</b> ' + (feature.properties['RECEPCIÓN'] !== null ? autolinker.link(String(feature.properties['RECEPCIÓN']).replace(/'/g, '\'').toLocaleString()) : 'N/A') + '</p>\
-                    </div>\
-                </div>\
-                \
-                <div class="accordion-item">\
-                    <button class="accordion-button">PELIGRO VOLCÁNICO</button>\
-                    <div class="accordion-content">\
-                        <p>' + (feature.properties['PELIGRO VO'] !== null ? autolinker.link(String(feature.properties['PELIGRO VO']).replace(/'/g, '\'').toLocaleString()) : 'N/A') + '</p>\
                     </div>\
                 </div>\
             </div>';
